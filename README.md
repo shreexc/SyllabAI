@@ -1,2 +1,2 @@
 # SyllabAI
-SyllabAI is a AI powered education platform which is dedicated to students as well as teachers.
+SyllabAI is a AI powered education platform which is dedicated to students as well as teachers for their study materials. Where teachers can create subjects, share the notes, and create quizzes for students for normal tests. Whereas students can add their notes, create animation for study feasibility, create practice quizzes, and get a help bot for them to get through tough parts of the notes.
