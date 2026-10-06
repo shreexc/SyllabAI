@@ -1,0 +1,155 @@
+<mxfile host="app.diagrams.net" modified="2026-10-03T00:00:00.000Z" agent="SyllabAI" version="24.7.17" type="device">
+  <diagram id="syllabai-use-case" name="SyllabAI Use Case Diagram">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- System boundary -->
+        <mxCell id="system" value="SyllabAI" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;strokeWidth=2;fontStyle=1;verticalAlign=top;spacingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="300" y="60" width="950" height="820" as="geometry"/>
+        </mxCell>
+
+        <!-- Actors -->
+        <mxCell id="student" value="Student" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="180" width="80" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="teacher" value="Teacher" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="520" width="80" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="admin" value="Platform Administrator" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="200" width="100" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="institution" value="Institution Administrator" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="520" width="120" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai" value="AI Service" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="900" width="100" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Student use cases -->
+        <mxCell id="uc_reg" value="Register" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="110" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_login" value="Login" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="590" y="110" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_profile" value="Manage Profile" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="110" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc_subject_access" value="Access Subject" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="390" y="230" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_material" value="Study Materials" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="230" width="170" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_assignment" value="View / Submit Assignment" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="830" y="230" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_quiz" value="Take Quiz" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="350" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_ai" value="Ask AI" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="690" y="350" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_progress" value="View Progress" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="350" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_notifications" value="View Notifications" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="470" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_search" value="Search Resources" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="810" y="470" width="180" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Teacher use cases -->
+        <mxCell id="uc_create_subject" value="Create / Manage Subject" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="590" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_create_material" value="Create / Publish Material" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="590" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_upload_pdf" value="Upload PDF" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="590" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_create_assignment" value="Create / Publish Assignment" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="700" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_review" value="Review Submission / Feedback" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="700" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_create_quiz" value="Create / Publish Quiz" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="700" width="180" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Admin use cases -->
+        <mxCell id="uc_users" value="Manage Users" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="120" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_roles" value="Manage Roles" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="230" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_moderate" value="Moderate Content" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="340" width="170" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_audit" value="Audit / Operations" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="450" width="170" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Institution admin -->
+        <mxCell id="uc_institution" value="Manage Institution Scope" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="590" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_institution_users" value="Manage Institution Users" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="700" width="190" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- AI external relationship -->
+        <mxCell id="uc_ai_processing" value="Process AI Request" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="800" width="180" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Actor connections -->
+        <mxCell id="e_student_reg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_reg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_login"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_profile" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_profile"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_subject" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_subject_access"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_material" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_material"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_assignment" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_assignment"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_quiz" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_quiz"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_ai" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_ai"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_progress" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_progress"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_notifications" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_notifications"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_student_search" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="student" target="uc_search"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_teacher_subject" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="teacher" target="uc_create_subject"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_teacher_material" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="teacher" target="uc_create_material"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_teacher_pdf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="teacher" target="uc_upload_pdf"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_teacher_assignment" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="teacher" target="uc_create_assignment"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_teacher_review" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="teacher" target="uc_review"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_teacher_quiz" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="teacher" target="uc_create_quiz"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_admin_users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="admin" target="uc_users"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_admin_roles" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="admin" target="uc_roles"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_admin_mod" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="admin" target="uc_moderate"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_admin_audit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="admin" target="uc_audit"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_inst_scope" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="institution" target="uc_institution"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_inst_users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="institution" target="uc_institution_users"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_ai" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" parent="1" source="ai" target="uc_ai_processing"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Internal use-case relationships -->
+        <mxCell id="r_ai" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;endFill=0;" edge="1" parent="1" source="uc_ai" target="uc_ai_processing"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="r_assign" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;endFill=0;" edge="1" parent="1" source="uc_assignment" target="uc_notifications"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="r_quiz" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;endFill=0;" edge="1" parent="1" source="uc_quiz" target="uc_progress"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Title -->
+        <mxCell id="title" value="SyllabAI — High-Level Use Case Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="10" width="550" height="40" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
