@@ -1,0 +1,3 @@
+import { ProfilePage } from "@/components/shared/ProfilePage";
+
+export default function StudentProfile() { return <ProfilePage role="student" />; }
