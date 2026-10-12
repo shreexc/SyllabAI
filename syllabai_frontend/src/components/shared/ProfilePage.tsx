@@ -265,14 +265,42 @@ export function ProfilePage({ role }: ProfilePageProps) {
         <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#77827a" }}>
           You are currently signed in with an HttpOnly session cookie.
         </p>
-        <button
+        {/* <button
           type="button"
           onClick={handleSignOut}
           className="signout-button"
           style={{ display: "inline-block", width: "auto", padding: "8px 16px", borderRadius: "6px", background: "#fff4f2", color: "#9c352a", fontWeight: 600, border: "1px solid #f2c7c2" }}
         >
           Sign out of account ↪
+        </button> */}
+
+
+        <button
+          type="button"
+          onClick={() => {
+            const confirmed = window.confirm(
+              "Are you sure you want to sign out of your account?"
+            );
+
+            if (confirmed) {
+              handleSignOut();
+            }
+          }}
+          className="signout-button"
+          style={{
+            display: "inline-block",
+            width: "auto",
+            padding: "8px 16px",
+            borderRadius: "6px",
+            background: "#fff4f2",
+            color: "#9c352a",
+            fontWeight: 600,
+            border: "1px solid #f2c7c2",
+          }}
+        >
+          Sign out of account ↪
         </button>
+
       </div>
     </div>
   );

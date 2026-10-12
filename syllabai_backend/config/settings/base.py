@@ -95,6 +95,13 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_THROTTLE_RATES": {"anon": "60/hour", "user": "1000/hour", "auth": "10/minute"},
     "EXCEPTION_HANDLER": "apps.common.exceptions.api_exception_handler",
+    # Preserve your existing DRF settings here.
+    # Additional DRF settings can be added here.
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/hour",
+        "user": "1000/hour",
+        "auth": "10/minute",
+    },
 }
 
 SIMPLE_JWT = {
@@ -117,6 +124,11 @@ CORS_ALLOWED_ORIGINS = [origin.strip() for origin in os.environ.get("CORS_ALLOWE
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ["accept", "authorization", "content-type", "x-csrftoken", "x-requested-with"]
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if origin.strip()]
+
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
+BREVO_SENDER_EMAIL = os.environ.get("BREVO_SENDER_EMAIL")
+BREVO_SENDER_NAME = os.environ.get("BREVO_SENDER_NAME")
+
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"

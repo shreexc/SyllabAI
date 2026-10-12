@@ -120,7 +120,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
 .auth-orbit { position: absolute; border: 1px solid #e4e9df; border-radius: 50%; opacity: .55; }
 .auth-orbit--one { width: 520px; height: 520px; top: 180px; left: -290px; }
 .auth-orbit--two { width: 430px; height: 430px; right: -270px; bottom: -190px; }
-
+.forgot-password-row { display: flex; justify-content: flex-end; margin-top: -0.5rem; margin-bottom: 0.5rem; }
 /* Role chooser */
 .choice-page { min-height: 100vh; padding: 32px max(34px, calc((100% - 1100px) / 2)); background: #f5f5ef; }
 .choice-content { width: min(720px, 100%); margin: 10vh auto 0; text-align: center; }
