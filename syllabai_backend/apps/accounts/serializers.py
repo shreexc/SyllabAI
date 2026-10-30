@@ -2,7 +2,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 from .models import User
-from .services import register_user
+from .sevices.services import register_user
 
 
 class EmptySerializer(serializers.Serializer):
@@ -41,3 +41,29 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ("id", "email", "first_name", "last_name", "role", "date_joined", "updated_at")
         read_only_fields = ("id", "email", "role", "date_joined", "updated_at")
+
+#email verification and password reset otp serializer
+class EmailVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.RegexField(
+        regex=r"^\d{6}$",
+        error_messages={
+            "invalid": "Enter a valid 6-digit verification code."
+        },
+    )
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.RegexField(regex=r"^\d{6}$")
+    new_password = serializers.CharField(
+        write_only=True,
+        trim_whitespace=False,
+    )
+
+    def validate(self, attrs):
+        validate_password(attrs["new_password"])
+        return attrs

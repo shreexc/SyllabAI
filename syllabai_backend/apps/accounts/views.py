@@ -2,7 +2,6 @@ from django.conf import settings
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
-from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
@@ -10,13 +9,32 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_spectacular.utils import OpenApiResponse, extend_schema
-
 from apps.common.utils import success_response
 from .authentication import CookieJWTAuthentication
 from .permissions import IsStudent, IsTeacher
 from .csrf import enforce_csrf
-from .serializers import EmptySerializer, LoginSerializer, ProfileSerializer, RegistrationSerializer, UserSerializer
-from .services import authenticate_user, create_token_pair
+from .serializers import EmptySerializer, LoginSerializer, ProfileSerializer, RegistrationSerializer, UserSerializer, EmailVerificationSerializer, ForgotPasswordSerializer,PasswordResetSerializer
+
+from .sevices.services import authenticate_user, create_token_pair
+from .sevices.otp_service import issue_otp
+
+
+import logging
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework import serializers, status
+from rest_framework.response import Response
+
+from apps.common.utils import success_response
+
+from .sevices.otp_service import issue_otp, verify_otp
+from .models import EmailOTP
+
+User = get_user_model()
+logger = logging.getLogger(__name__)
+
 
 
 def set_auth_cookies(response, access_token: str, refresh_token: str | None = None, role: str | None = None):
@@ -95,12 +113,22 @@ class RegistrationView(AuthThrottleMixin, APIView):
     )
     def post(self, request):
         enforce_csrf(request)
-        serializer = RegistrationSerializer(data=request.data, context={"role": self.role})
+
+        serializer = RegistrationSerializer(
+            data=request.data,
+            context={"role": self.role},
+        )
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        access, refresh = create_token_pair(user)
-        response = success_response("Registration successful.", {"user": UserSerializer(user).data}, status.HTTP_201_CREATED)
-        return set_auth_cookies(response, access, refresh, user.role)
+        
+
+        issue_otp(user, "verify_email")
+
+        return success_response(
+        "Registration received. Check your email for a verification code.",
+        {"email": user.email},
+        status.HTTP_201_CREATED,
+    )
 
 
 class TeacherRegistrationView(RegistrationView):
@@ -325,3 +353,133 @@ class StudentDashboardView(DashboardView):
             {"role": self.role, "user": UserSerializer(request.user).data, "summary": summary},
         )
 
+
+
+class VerifyEmailView(AuthThrottleMixin, APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    
+    @extend_schema(
+        summary="Register role account",
+        description="Creates an account with the role fixed by this endpoint (never accepted from request data) and sets HttpOnly access/refresh cookies. Browser requests require CSRF.",
+        request=EmailVerificationSerializer,
+        responses={201: OpenApiResponse(description="Account created; response data contains the created user.")},
+        auth=[],
+    )
+
+    def post(self, request):
+        enforce_csrf(request)
+
+        serializer = EmailVerificationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"].strip().lower()
+        code = serializer.validated_data["code"]
+
+        user = User.objects.filter(email__iexact=email).first()
+        if user is None:
+            return Response(
+                {"detail": "Invalid or expired verification code."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if user.is_email_verified:
+            return success_response("Email is already verified.")
+
+        verify_otp(user, EmailOTP.Purpose.VERIFY_EMAIL, code)
+
+        user.is_email_verified = True
+        user.save(update_fields=["is_email_verified"])
+
+        return success_response(
+            "Email verified successfully. You can now sign in."
+        )
+
+
+class ForgotPasswordView(AuthThrottleMixin, APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    
+    @extend_schema(
+        summary="Register role account",
+        description="Creates an account with the role fixed by this endpoint (never accepted from request data) and sets HttpOnly access/refresh cookies. Browser requests require CSRF.",
+        request=ForgotPasswordSerializer,
+        responses={201: OpenApiResponse(description="Account created; response data contains the created user.")},
+        auth=[],
+    )
+
+    def post(self, request):
+        enforce_csrf(request)
+
+        serializer = ForgotPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"].strip().lower()
+        user = User.objects.filter(
+            email__iexact=email,
+            is_active=True,
+            is_email_verified=True,
+        ).first()
+
+        if user:
+            try:
+                issue_otp(user, EmailOTP.Purpose.RESET_PASSWORD)
+            except Exception:
+                # Avoid disclosing account existence or delivery details.
+                # Log only safe metadata; never log the OTP.
+                logger.exception("Password-reset OTP issuance failed.")
+
+        return success_response(
+            "If an eligible account exists, a reset code will be sent."
+        )
+
+
+class ResetPasswordView(AuthThrottleMixin, APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    
+    @extend_schema(
+        summary="Register role account",
+        description="Creates an account with the role fixed by this endpoint (never accepted from request data) and sets HttpOnly access/refresh cookies. Browser requests require CSRF.",
+        request=PasswordResetSerializer,
+        responses={201: OpenApiResponse(description="Account created; response data contains the created user.")},
+        auth=[],
+    )
+
+    def post(self, request):
+        enforce_csrf(request)
+
+        serializer = PasswordResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"].strip().lower()
+        code = serializer.validated_data["code"]
+        new_password = serializer.validated_data["new_password"]
+
+        user = User.objects.filter(
+            email__iexact=email,
+            is_active=True,
+            is_email_verified=True,
+        ).first()
+
+        if user is None:
+            return Response(
+                {"detail": "Invalid or expired reset code."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            validate_password(new_password, user=user)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError(
+                {"new_password": list(exc.messages)}
+            ) from exc
+
+        verify_otp(user, EmailOTP.Purpose.RESET_PASSWORD, code)
+
+        user.set_password(new_password)
+        user.save(update_fields=["password"])
+
+        return success_response(
+            "Password reset successfully. Please sign in again."
+        )

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { FormField } from "@/components/shared/FormField";
 import { useTeacherAuth } from "@/hooks/useTeacherAuth";
@@ -16,6 +17,14 @@ export function TeacherLoginForm() {
     <form className="auth-form" onSubmit={submit}>
       <FormField id="teacher-email" label="Work email" name="email" type="email" autoComplete="email" placeholder="you@school.edu" required value={email} onChange={(event) => setEmail(event.target.value)} />
       <FormField id="teacher-password" label="Password" name="password" type="password" autoComplete="current-password" placeholder="Enter your password" required value={password} onChange={(event) => setPassword(event.target.value)} />
+      <div className="forgot-password-row">
+        <Link
+          href={`/forgot-password?role=teacher&email=${encodeURIComponent(email)}`}
+          className="quiet-link"
+        >
+          Forgot password?
+        </Link>
+      </div>
       <button className="primary-button" type="submit" disabled={auth.loading}>{auth.loading ? "Signing you in…" : "Sign in as an educator"}<span>↗</span></button>
     </form>
   );

@@ -15,6 +15,9 @@ from .views import (
     TeacherProfileView,
     TeacherRegistrationView,
     CurrentUserView,
+    VerifyEmailView,
+    ForgotPasswordView,
+    ResetPasswordView,
 )
 
 app_name = "accounts"
@@ -34,4 +37,22 @@ urlpatterns = [
     path("teacher/profile/", TeacherProfileView.as_view(), name="teacher-profile"),
     path("student/dashboard/", StudentDashboardView.as_view(), name="student-dashboard"),
     path("student/profile/", StudentProfileView.as_view(), name="student-profile"),
+
+    # Add inside urlpatterns:
+    path(
+        "auth/email/verify/",
+        VerifyEmailView.as_view(),
+        name="email-verify",
+    ),
+    path(
+        "auth/password/forgot/",
+        ForgotPasswordView.as_view(),
+        name="password-forgot",
+    ),
+    path(
+        "auth/password/reset/",
+        ResetPasswordView.as_view(),
+        name="password-reset",
+    ),
+
 ]

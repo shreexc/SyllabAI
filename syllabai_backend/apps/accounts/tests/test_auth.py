@@ -3,7 +3,7 @@ from django.test import TestCase
 import json
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
-from apps.accounts.services import create_token_pair
+from syllabai_backend.apps.accounts.sevices.services import create_token_pair
 
 User = get_user_model()
 

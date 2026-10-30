@@ -88,7 +88,7 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
             <span aria-hidden="true">◉</span>
             My Profile
           </Link>
-          <button
+          {/* <button
             type="button"
             className="signout-button"
             onClick={() => {
@@ -97,7 +97,25 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
             }}
           >
             ↪ &nbsp; Sign out
+          </button> */}
+
+          <button
+            type="button"
+            className="signout-button"
+            onClick={() => {
+              const confirmed = window.confirm(
+                "Are you sure you want to sign out?"
+              );
+
+              if (confirmed) {
+                if (onClose) onClose();
+                onSignOut();
+              }
+            }}
+          >
+            ↪ &nbsp; Sign out
           </button>
+
         </div>
       </aside>
     </>
