@@ -35,7 +35,7 @@ describe("role-specific authentication forms", () => {
     fireEvent.change(screen.getByLabelText("Last name"), { target: { value: "Teacher" } });
     fireEvent.change(screen.getByLabelText("Work email"), { target: { value: "teach@example.com" } });
     fireEvent.change(screen.getByLabelText("Create a password"), { target: { value: "StrongPass123!" } });
-    submitForm("Create educator account");
+    submitForm("Create teacher account");
     expect(authMocks.teacherRegister).toHaveBeenCalledWith({ first_name: "Taylor", last_name: "Teacher", email: "teach@example.com", password: "StrongPass123!" });
   });
 
@@ -65,7 +65,11 @@ describe("role-specific authentication forms", () => {
     fireEvent.change(screen.getByLabelText("Last name"), { target: { value: "Learner" } });
     fireEvent.change(screen.getByLabelText("Email address"), { target: { value: "learn@example.com" } });
     fireEvent.change(screen.getByLabelText("Create a password"), { target: { value: "StrongPass123!" } });
-    submitForm("Create learner account");
+    fireEvent.click(screen.getByRole("button", { name: "Show password" }));
+    expect(screen.getByLabelText("Create a password")).toHaveAttribute("type", "text");
+    fireEvent.click(screen.getByRole("button", { name: "Hide password" }));
+    expect(screen.getByLabelText("Create a password")).toHaveAttribute("type", "password");
+    submitForm("Create student account");
     expect(authMocks.studentRegister).toHaveBeenCalledWith({ first_name: "Alex", last_name: "Learner", email: "learn@example.com", password: "StrongPass123!" });
   });
 });
