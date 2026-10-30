@@ -7,8 +7,10 @@ interface PasswordFieldProps {
   name: string;
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
   placeholder?: string;
   autoComplete?: string;
+  minLength?: number;
   required?: boolean;
 }
 
@@ -17,15 +19,17 @@ export function PasswordField({
   name,
   value,
   onChange,
+  label = "Password",
   placeholder = "Enter your password",
   autoComplete = "current-password",
+  minLength,
   required = true,
 }: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
 
   return (
     <div className="form-field password-field">
-      <label className="field-label" htmlFor={id}>Password</label>
+      <label className="field-label" htmlFor={id}>{label}</label>
       <span className="password-input-wrap">
         <input
           className="field-input"
@@ -34,6 +38,7 @@ export function PasswordField({
           type={visible ? "text" : "password"}
           autoComplete={autoComplete}
           placeholder={placeholder}
+          minLength={minLength}
           required={required}
           value={value}
           onChange={onChange}
@@ -42,6 +47,7 @@ export function PasswordField({
           className="password-visibility"
           type="button"
           aria-label={visible ? "Hide password" : "Show password"}
+          aria-controls={id}
           aria-pressed={visible}
           onClick={() => setVisible((current) => !current)}
         >

@@ -9,13 +9,13 @@ interface AuthFrameProps {
   children: ReactNode;
 }
 
-const roleLabel = { teacher: "Educator", student: "Learner" } as const;
+const roleLabel = { teacher: "Teacher", student: "Student" } as const;
 
 export function AuthFrame({ role, mode, children }: AuthFrameProps) {
   const otherRole = role === "teacher" ? "student" : "teacher";
   const title = mode === "login" ? "Welcome back" : "Create your account";
   return (
-    <main className={`auth-page auth-page--${role}${mode === "login" ? " auth-page--login" : ""}`}>
+    <main className={`auth-page auth-page--${role}${mode === "login" ? " auth-page--login" : " auth-page--register"}`}>
       <div className="auth-orbit auth-orbit--one" />
       <div className="auth-orbit auth-orbit--two" />
       <header className={`auth-topbar${mode === "login" ? " auth-topbar--login" : ""}`}>
@@ -34,10 +34,8 @@ export function AuthFrame({ role, mode, children }: AuthFrameProps) {
             </>
           ) : (
             <>
-              <span className="eyebrow"><span className="eyebrow-dot" /> YOUR LEARNING SPACE</span>
               <h1>{role === "teacher" ? <>Make every lesson<br /><em>go further.</em></> : <>Small steps.<br /><em>Big discoveries.</em></>}</h1>
-              <p>{role === "teacher" ? "A thoughtful home for your teaching practice. Your next great lesson starts here." : "Your notes, ideas, and next breakthrough—together in one calm place."}</p>
-              <div className="story-note"><span className="story-note-icon">✳</span><span>{role === "teacher" ? "Teach with clarity. Inspire with confidence." : "Learn at your pace. Find your own way."}</span></div>
+              <div className="auth-register-art"><AuthStudyIllustration /></div>
             </>
           )}
         </aside>

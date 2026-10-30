@@ -143,7 +143,10 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
 .auth-page--register .auth-story { max-width: 520px; padding: 0; }
 .auth-page--register .auth-story h1 { margin: 0; color: #09090c; font-family: "Ramaraja", var(--serif); font-size: clamp(48px, 5.7vw, 64px); font-weight: 400; line-height: .96; letter-spacing: 0; }
 .auth-page--register .auth-story h1 em { color: #6555c1; font-style: normal; font-weight: 400; }
-.auth-register-art { display: block; width: min(390px, 92%); height: auto; margin: clamp(35px, 4vw, 58px) 0 0 8px; overflow: visible; }
+.auth-register-art { display: block; width: min(460px, 100%); height: 330px; margin: clamp(35px, 4vw, 50px) 0 0 8px; overflow: visible; }
+.auth-page--register .register-email-field { position: relative; }
+.auth-page--register .register-email-field .field-input { padding-left: 36px; }
+.auth-page--register .register-email-icon { position: absolute; top: 36px; left: 10px; width: 16px; height: 16px; fill: none; stroke: #25222a; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.6; }
 .auth-page--register .auth-card { width: 100%; padding: 48px 42px 34px; border: 0; border-radius: 15px; background: #fff; box-shadow: none; }
 .auth-page--register .card-kicker { color: #806cf4; font-size: 10px; font-weight: 500; letter-spacing: .02em; text-transform: uppercase; }
 .auth-page--register .auth-card h2 { margin: 11px 0 32px; color: #20243a; font-family: "Baskervville", var(--serif); font-size: 28px; font-style: italic; font-weight: 400; letter-spacing: -.025em; }
@@ -509,7 +512,8 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   .auth-page--register .auth-layout { min-height: auto; grid-template-columns: 1fr; gap: 24px; padding: 34px 0; }
   .auth-page--register .auth-story { max-width: none; }
   .auth-page--register .auth-story h1 { font-size: clamp(46px, 7vw, 58px); }
-  .auth-register-art { width: min(320px, 70%); max-height: 200px; margin: 24px 0 0; }
+  .auth-register-art { width: min(320px, 70%); height: 220px; margin: 18px 0 0; }
+  .auth-register-art .auth-study-art { transform: scale(.66); }
   .auth-page--register .auth-card { max-width: 500px; justify-self: center; padding: 38px 36px 30px; }
   .auth-page--register .auth-card h2 { margin-bottom: 28px; }
   .auth-page--register .auth-form { gap: 16px; }
@@ -558,7 +562,8 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   .auth-page--register .quiet-link { font-size: 11px; }
   .auth-page--register .auth-layout { gap: 18px; padding: 26px 0 28px; }
   .auth-page--register .auth-story h1 { font-size: clamp(40px, 10vw, 50px); }
-  .auth-register-art { width: min(250px, 70%); max-height: 160px; margin: 17px 0 0; }
+  .auth-register-art { width: min(260px, 80%); height: 180px; margin: 12px 0 0; }
+  .auth-register-art .auth-study-art { transform: scale(.54); }
   .auth-page--register .auth-card { max-width: 500px; padding: 29px 24px 24px; }
   .auth-page--register .auth-card h2 { margin-bottom: 24px; font-size: 27px; }
   .auth-page--register .auth-form { gap: 16px; }
