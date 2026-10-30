@@ -37,7 +37,7 @@ export function LandingNavigation() {
   return (
     <nav className={`landing-nav${role ? " landing-nav--authenticated" : ""}`} aria-label="Main navigation">
       <Link href={dashboardHref} className="brand-lockup" aria-label={role ? `${spaceLabel[role]} home` : "SyllabAI home"}>
-        <span className="brand-mark">s.</span><span>SyllabAI</span>
+        <span className="brand-mark">S</span><span>SyllabAI</span>
       </Link>
       {role ? (
         <div className="landing-nav-actions">
@@ -47,8 +47,8 @@ export function LandingNavigation() {
         </div>
       ) : (
         <div className="landing-nav-actions">
-          <Link href="/login">Sign in</Link>
-          <Link href="/register" className="nav-cta">Get started <span>↗</span></Link>
+          <Link href="/login" className="landing-signin">Sign in</Link>
+          <Link href="/register" className="nav-cta">Get started <span aria-hidden="true">↗</span></Link>
         </div>
       )}
     </nav>
