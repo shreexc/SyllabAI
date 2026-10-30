@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { FormField } from "@/components/shared/FormField";
+import { PasswordField } from "@/components/shared/PasswordField";
 import { useTeacherAuth } from "@/hooks/useTeacherAuth";
 
 export function TeacherLoginForm() {
@@ -15,8 +16,8 @@ export function TeacherLoginForm() {
   }
   return (
     <form className="auth-form" onSubmit={submit}>
-      <FormField id="teacher-email" label="Work email" name="email" type="email" autoComplete="email" placeholder="you@school.edu" required value={email} onChange={(event) => setEmail(event.target.value)} />
-      <FormField id="teacher-password" label="Password" name="password" type="password" autoComplete="current-password" placeholder="Enter your password" required value={password} onChange={(event) => setPassword(event.target.value)} />
+      <FormField id="teacher-email" label="Email address" name="email" type="email" autoComplete="email" placeholder="you@example.com" required value={email} onChange={(event) => setEmail(event.target.value)} />
+      <PasswordField id="teacher-password" name="password" value={password} onChange={(event) => setPassword(event.target.value)} />
       <div className="forgot-password-row">
         <Link
           href={`/forgot-password?role=teacher&email=${encodeURIComponent(email)}`}
@@ -25,7 +26,7 @@ export function TeacherLoginForm() {
           Forgot password?
         </Link>
       </div>
-      <button className="primary-button" type="submit" disabled={auth.loading}>{auth.loading ? "Signing you in…" : "Sign in as an educator"}<span>↗</span></button>
+      <button className="primary-button" type="submit" disabled={auth.loading}>{auth.loading ? "Signing you in…" : "Sign in"}</button>
     </form>
   );
 }

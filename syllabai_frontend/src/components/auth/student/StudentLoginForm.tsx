@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { FormField } from "@/components/shared/FormField";
+import { PasswordField } from "@/components/shared/PasswordField";
 import { useStudentAuth } from "@/hooks/useStudentAuth";
 
 export function StudentLoginForm() {
@@ -27,14 +28,9 @@ export function StudentLoginForm() {
         onChange={(event) => setEmail(event.target.value)}
       />
 
-      <FormField
+      <PasswordField
         id="student-password"
-        label="Password"
         name="password"
-        type="password"
-        autoComplete="current-password"
-        placeholder="Enter your password"
-        required
         value={password}
         onChange={(event) => setPassword(event.target.value)}
       />
@@ -49,8 +45,7 @@ export function StudentLoginForm() {
       </div>
 
       <button className="primary-button" type="submit" disabled={auth.loading}>
-        {auth.loading ? "Signing you in…" : "Sign in as a learner"}
-        <span>↗</span>
+        {auth.loading ? "Signing you in…" : "Sign in"}
       </button>
     </form>
   );

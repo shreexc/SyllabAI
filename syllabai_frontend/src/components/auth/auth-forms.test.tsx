@@ -22,9 +22,9 @@ beforeEach(() => vi.clearAllMocks());
 describe("role-specific authentication forms", () => {
   it("submits teacher login credentials through the teacher flow", () => {
     render(<TeacherLoginForm />);
-    fireEvent.change(screen.getByLabelText("Work email"), { target: { value: "teach@example.com" } });
+    fireEvent.change(screen.getByLabelText("Email address"), { target: { value: "teach@example.com" } });
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "pass" } });
-    submitForm("Sign in as an educator");
+    submitForm("Sign in");
     expect(authMocks.teacherLogin).toHaveBeenCalledWith({ email: "teach@example.com", password: "pass" });
     expect(authMocks.studentLogin).not.toHaveBeenCalled();
   });
@@ -43,9 +43,20 @@ describe("role-specific authentication forms", () => {
     render(<StudentLoginForm />);
     fireEvent.change(screen.getByLabelText("Email address"), { target: { value: "learn@example.com" } });
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "pass" } });
-    submitForm("Sign in as a learner");
+    submitForm("Sign in");
     expect(authMocks.studentLogin).toHaveBeenCalledWith({ email: "learn@example.com", password: "pass" });
     expect(authMocks.teacherLogin).not.toHaveBeenCalled();
+  });
+
+  it("allows a learner to show and hide their password", () => {
+    render(<StudentLoginForm />);
+    const password = screen.getByLabelText("Password");
+
+    expect(password).toHaveAttribute("type", "password");
+    fireEvent.click(screen.getByRole("button", { name: "Show password" }));
+    expect(password).toHaveAttribute("type", "text");
+    fireEvent.click(screen.getByRole("button", { name: "Hide password" }));
+    expect(password).toHaveAttribute("type", "password");
   });
 
   it("submits student registration without a client-selected role", () => {
