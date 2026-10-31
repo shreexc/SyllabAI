@@ -73,7 +73,7 @@ export function useTeacherAuth() {
       toast.success("You’ve signed out", {
         description: "Your teaching space is secure.",
       });
-      router.replace(ROUTES.teacher.login);
+      router.replace(ROUTES.home);
       router.refresh();
     } catch (caught) {
       toast.error(

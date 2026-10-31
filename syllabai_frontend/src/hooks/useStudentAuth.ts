@@ -73,7 +73,7 @@ export function useStudentAuth() {
       toast.success("You’ve signed out", {
         description: "Your learning space is secure.",
       });
-      router.replace(ROUTES.student.login);
+      router.replace(ROUTES.home);
       router.refresh();
     } catch (caught) {
       toast.error(
