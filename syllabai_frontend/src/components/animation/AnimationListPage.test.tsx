@@ -72,4 +72,19 @@ describe("AnimationListPage", () => {
 
     expect(await screen.findByText("No animations generated yet")).toBeInTheDocument();
   });
+
+  it("renders the designed student empty state without unused controls", async () => {
+    vi.mocked(listPreparations).mockResolvedValue([]);
+    render(<AnimationListPage role="student" />);
+
+    expect(await screen.findByText("No animations generated yet")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Educational Animations" })).toBeInTheDocument();
+    expect(screen.queryByRole("searchbox", { name: "Search animations" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Create Animation/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Prepare your first animation/ })).toHaveAttribute(
+      "href",
+      "/student/prepare?type=animation",
+    );
+    expect(screen.getByRole("status").querySelector("svg")).toBeInTheDocument();
+  });
 });
