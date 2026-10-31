@@ -2476,6 +2476,158 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
       inset: 25px 30px;
     }
   }
+
+/* Student flashcard deck list */
+.flashcard-list-page--student .page-header {
+  margin-bottom: 30px;
+}
+
+.flashcard-list-page--student .page-header-row {
+  align-items: flex-start;
+}
+
+.flashcard-list-page--student .eyebrow {
+  color: #7665f5;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 17px;
+}
+
+.flashcard-list-page--student .page-title {
+  margin: 14px 0 24px;
+  color: #000;
+  font-family: var(--font-editorial);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+.flashcard-list-page--student .page-description {
+  max-width: 610px;
+  color: #756a6a;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+}
+
+.flashcard-list-page--student .flashcard-empty-state {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  height: 392px;
+  min-height: 392px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 18px 28px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  text-align: center;
+}
+
+.flashcard-list-page--student .flashcard-empty-state::before {
+  position: absolute;
+  z-index: -1;
+  inset: 22px 27px;
+  border: 1px dashed #756a6a;
+  border-radius: 10px;
+  content: "";
+  pointer-events: none;
+}
+
+.flashcard-list-page--student .flashcard-empty-state .empty-state-icon {
+  display: grid;
+  width: 180px;
+  height: 120px;
+  flex: 0 0 auto;
+  place-items: center;
+  margin: 0 0 12px;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.flashcard-list-page--student .flashcard-empty-state .empty-state-icon svg {
+  display: block;
+  width: 180px;
+  height: 120px;
+}
+
+.flashcard-list-page--student .flashcard-empty-state .empty-state-title {
+  margin: 0 0 16px;
+  color: #330bbd;
+  font-family: var(--font-editorial);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.flashcard-list-page--student .flashcard-empty-state .empty-state-description {
+  max-width: 500px;
+  margin: 0 auto 16px;
+  color: #756a6a;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.flashcard-list-page--student .flashcard-empty-state .empty-state-action {
+  position: relative;
+  display: inline-flex;
+  width: min(240px, 100%);
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--gradient-primary-button);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.flashcard-list-page--student .flashcard-empty-state .empty-state-action span {
+  position: absolute;
+  right: 16px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.flashcard-list-page--student .flashcard-list-loading-state {
+  min-height: 392px;
+}
+
+.flashcard-list-page--student .flashcard-filter-toolbar {
+  width: min(380px, 100%);
+  margin-bottom: 24px;
+}
+
+@media (max-width: 767px) {
+  .flashcard-list-page--student .page-title {
+    font-size: 32px;
+  }
+
+  .flashcard-list-page--student .flashcard-empty-state {
+    min-height: 392px;
+    padding: 18px 24px;
+  }
+
+  .flashcard-list-page--student .flashcard-empty-state::before {
+    inset: 22px 27px;
+  }
+
+  .flashcard-list-page--student .flashcard-empty-state .empty-state-title {
+    font-size: 22px;
+  }
+}
+
 @media (max-width: 1100px) {
   .home-sidebar {
     width: 233px;
