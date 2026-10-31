@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { api, getApiErrorDescription } from "@/lib/api";
 import { ROUTES } from "@/lib/constants";
+import { AccountRecoveryFrame } from "@/components/shared/AccountRecoveryFrame";
 
 function ForgotPasswordForm() {
   const params = useSearchParams();
@@ -40,39 +41,36 @@ function ForgotPasswordForm() {
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-card">
-        <div className="card-kicker">Account recovery</div>
-        <h2>Forgot your password?</h2>
-        <p className="card-subtitle">
+    <AccountRecoveryFrame
+      role={role}
+      title="Forgot your password?"
+      description={
+        <>
           Enter your registered email address to request a password-reset code.
-        </p>
-
-        <form className="auth-form" onSubmit={submit}>
-          <label htmlFor="reset-email">Email address</label>
+        </>
+      }
+      footer={<>Remembered your password? <Link href={ROUTES[role].login}>Back to sign in</Link></>}
+    >
+      <form className="auth-recovery-form" onSubmit={submit}>
+          <label className="field-label" htmlFor="reset-email">Email address</label>
           <input
             id="reset-email"
             name="email"
             type="email"
             autoComplete="email"
             placeholder="you@example.com"
+            className="field-input"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
           />
 
-          <button className="primary-button" type="submit" disabled={loading}>
+          <button className="auth-recovery-submit" type="submit" disabled={loading}>
             {loading ? "Requesting code…" : "Send reset code"}
             <span>↗</span>
           </button>
-        </form>
-
-        <p className="card-subtitle">
-          Remembered your password?{" "}
-          <Link href={ROUTES[role].login}>Back to sign in</Link>
-        </p>
-      </section>
-    </main>
+      </form>
+    </AccountRecoveryFrame>
   );
 }
 

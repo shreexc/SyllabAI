@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { api, getApiErrorDescription } from "@/lib/api";
 import { ROUTES } from "@/lib/constants";
+import { AccountRecoveryFrame } from "@/components/shared/AccountRecoveryFrame";
 
 function ResetPasswordForm() {
   const params = useSearchParams();
@@ -57,17 +58,14 @@ function ResetPasswordForm() {
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-card">
-        <div className="card-kicker">Account recovery</div>
-        <h2>Create a new password</h2>
-        <p className="card-subtitle">
-          Enter the reset code sent to <strong>{email || "your email"}</strong>,
-          then choose a new password.
-        </p>
-
-        <form className="auth-form" onSubmit={submit}>
-          <label htmlFor="reset-code">Reset code</label>
+    <AccountRecoveryFrame
+      role={role}
+      title="Create a new password"
+      description={<>Enter the reset code sent to <strong>{email || "your email"}</strong>, then choose a new password.</>}
+      footer={<Link href={`/forgot-password?role=${role}&email=${encodeURIComponent(email)}`}>Request another reset code</Link>}
+    >
+      <form className="auth-recovery-form" onSubmit={submit}>
+          <label className="field-label" htmlFor="reset-code">Reset code</label>
           <input
             id="reset-code"
             name="code"
@@ -77,6 +75,7 @@ function ResetPasswordForm() {
             pattern="[0-9]{6}"
             maxLength={6}
             placeholder="123456"
+            className="field-input"
             value={code}
             onChange={(event) =>
               setCode(event.target.value.replace(/\D/g, "").slice(0, 6))
@@ -84,32 +83,34 @@ function ResetPasswordForm() {
             required
           />
 
-          <label htmlFor="new-password">New password</label>
+          <label className="field-label" htmlFor="new-password">New password</label>
           <input
             id="new-password"
             name="new_password"
             type="password"
             autoComplete="new-password"
             minLength={8}
+            className="field-input"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
           />
 
-          <label htmlFor="confirm-password">Confirm new password</label>
+          <label className="field-label" htmlFor="confirm-password">Confirm new password</label>
           <input
             id="confirm-password"
             name="confirm_password"
             type="password"
             autoComplete="new-password"
             minLength={8}
+            className="field-input"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
             required
           />
 
           <button
-            className="primary-button"
+            className="auth-recovery-submit"
             type="submit"
             disabled={loading || code.length !== 6 || !email}
           >
@@ -117,14 +118,7 @@ function ResetPasswordForm() {
             <span>↗</span>
           </button>
         </form>
-
-        <p className="card-subtitle">
-          <Link href={`/forgot-password?role=${role}&email=${encodeURIComponent(email)}`}>
-            Request another reset code
-          </Link>
-        </p>
-      </section>
-    </main>
+    </AccountRecoveryFrame>
   );
 }
 
