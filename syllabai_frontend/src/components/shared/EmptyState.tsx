@@ -4,12 +4,13 @@ import Link from "next/link";
 import React from "react";
 
 interface EmptyStateProps {
-  icon?: string;
+  icon?: React.ReactNode;
   title: string;
   description: string;
   actionLabel?: string;
   actionHref?: string;
   onAction?: () => void;
+  className?: string;
 }
 
 export function EmptyState({
@@ -19,9 +20,10 @@ export function EmptyState({
   actionLabel,
   actionHref,
   onAction,
+  className,
 }: EmptyStateProps) {
   return (
-    <div className="empty-state-box" role="status">
+    <div className={`empty-state-box${className ? ` ${className}` : ""}`} role="status">
       <div className="empty-state-icon" aria-hidden="true">{icon}</div>
       <h3 className="empty-state-title">{title}</h3>
       <p className="empty-state-description">{description}</p>

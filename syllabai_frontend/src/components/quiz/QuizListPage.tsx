@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DifficultyBadge } from "@/components/shared/DifficultyBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
@@ -21,12 +21,13 @@ export function QuizListPage({ role }: QuizListPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
+  const fetchQuizzes = useCallback(() => listPreparations(role, { type: "quiz" }), [role]);
 
   const loadQuizzes = async () => {
     setLoading(true);
     setError(null);
     try {
-      const items = await listPreparations(role, { type: "quiz" });
+      const items = await fetchQuizzes();
       setQuizzes(items);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load quizzes.");
@@ -36,8 +37,30 @@ export function QuizListPage({ role }: QuizListPageProps) {
   };
 
   useEffect(() => {
-    void loadQuizzes();
-  }, [role]);
+    let cancelled = false;
+
+    fetchQuizzes()
+      .then((items) => {
+        if (!cancelled) {
+          setQuizzes(items);
+          setError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load quizzes.");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchQuizzes]);
 
   const filteredQuizzes = useMemo(() => {
     return quizzes.filter((q) => {
@@ -51,52 +74,83 @@ export function QuizListPage({ role }: QuizListPageProps) {
   }, [quizzes, searchQuery, difficultyFilter]);
 
   return (
-    <div className="quiz-list-page">
+    <div className={`quiz-list-page${role === "student" ? " quiz-list-page--student" : ""}`}>
       <PageHeader
         eyebrow="PRACTICE & ASSESSMENT"
         title={role === "teacher" ? "Teaching Quizzes" : "Practice Quizzes"}
-        description="Source-grounded comprehension questions with instant feedback and explanations."
-        actionHref={`/${role}/prepare?type=quiz`}
-        actionLabel="＋ Create Quiz"
+        description={
+          role === "student"
+            ? "Source grounded comprehension questions with instant feedback and explanations."
+            : "Source-grounded comprehension questions with instant feedback and explanations."
+        }
+        actionHref={role === "teacher" ? `/${role}/prepare?type=quiz` : undefined}
+        actionLabel={role === "teacher" ? "＋ Create Quiz" : undefined}
       />
 
-      {/* Filter toolbar */}
-      <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", marginBottom: "24px" }}>
-        <input
-          type="search"
-          placeholder="Search quizzes by title…"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="field-input"
-          style={{ maxWidth: "320px" }}
-          aria-label="Search quizzes"
-        />
-        <select
-          value={difficultyFilter}
-          onChange={(e) => setDifficultyFilter(e.target.value)}
-          className="field-input"
-          style={{ width: "auto", height: "44px" }}
-          aria-label="Filter by difficulty"
-        >
-          <option value="all">All Difficulties</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-      </div>
+      {!loading && !error && (role === "teacher" || quizzes.length > 0) && (
+        <div className="quiz-filter-toolbar">
+          <input
+            type="search"
+            placeholder="Search quizzes by title…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="field-input"
+            aria-label="Search quizzes"
+          />
+          <select
+            value={difficultyFilter}
+            onChange={(e) => setDifficultyFilter(e.target.value)}
+            className="field-input"
+            aria-label="Filter by difficulty"
+          >
+            <option value="all">All Difficulties</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+      )}
 
-      {loading && <LoadingSkeleton type="cards" count={3} />}
+      {loading &&
+        (role === "student" ? (
+          <div className="quiz-loading-state">
+            <LoadingSkeleton type="cards" count={3} />
+          </div>
+        ) : (
+          <LoadingSkeleton type="cards" count={3} />
+        ))}
 
       {error && <ErrorState message={error} onRetry={loadQuizzes} />}
 
       {!loading && !error && filteredQuizzes.length === 0 && (
         <EmptyState
-          icon="✦"
+          className={role === "student" ? "quiz-empty-state" : undefined}
+          icon={
+            role === "student" ? (
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 42 42"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="7" y="5" width="27" height="32" rx="3" />
+                <rect x="11" y="11" width="4" height="4" rx="0.5" />
+                <rect x="11" y="19" width="4" height="4" rx="0.5" />
+                <rect x="11" y="27" width="4" height="4" rx="0.5" />
+                <path d="M19 13h10M19 21h10M19 29h7" />
+                <path d="m36 11 2 2-1 19-2 5-2-5 1-19 2-2Z" />
+              </svg>
+            ) : "✦"
+          }
           title={searchQuery || difficultyFilter !== "all" ? "No matching quizzes found" : "No quizzes created yet"}
           description={
             searchQuery || difficultyFilter !== "all"
               ? "Try adjusting your search or difficulty filter."
-              : "Upload a document to generate multiple choice and fill-in-the-blank practice questions with source grounding."
+              : "Upload a document to generate multiple choice and fill in the blank practice questions with source grounding."
           }
           actionLabel={searchQuery || difficultyFilter !== "all" ? undefined : "Prepare your first quiz"}
           actionHref={searchQuery || difficultyFilter !== "all" ? undefined : `/${role}/prepare?type=quiz`}
@@ -104,7 +158,7 @@ export function QuizListPage({ role }: QuizListPageProps) {
       )}
 
       {!loading && !error && filteredQuizzes.length > 0 && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px" }}>
+        <div className="quiz-card-grid">
           {filteredQuizzes.map((quiz) => {
             const result = quiz.result as unknown as QuizContent;
             const title = result?.title || `${quiz.resource?.title || "Topic"} Quiz`;
@@ -113,49 +167,34 @@ export function QuizListPage({ role }: QuizListPageProps) {
             const estTime = `${Math.max(3, Math.ceil(qCount * 0.8))} min`;
 
             return (
-              <div
-                key={quiz.id}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  padding: "24px",
-                  border: "1px solid #e5ebe2",
-                  borderRadius: "12px",
-                  background: "#fffefa",
-                  transition: "transform .15s, box-shadow .15s",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
+              <article key={quiz.id} className={`quiz-card quiz-card--${role}`}>
+                <div className="quiz-card-meta">
                   <DifficultyBadge difficulty={diff} />
-                  <span style={{ fontSize: "11px", color: "#8a948e" }}>
-                    ~{estTime}
-                  </span>
+                  <span className="quiz-card-time">~{estTime}</span>
                 </div>
 
-                <h3 style={{ margin: "0 0 10px", fontFamily: "var(--serif)", fontSize: "20px", fontWeight: 400, color: "#232d29" }}>
-                  {title}
-                </h3>
+                <h3 className="quiz-card-title">{title}</h3>
 
-                <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#6f7b73" }}>
+                <p className="quiz-card-description">
                   {qCount} comprehension questions derived from source text.
                 </p>
 
-                <div style={{ marginBottom: "16px" }}>
+                <div className="quiz-card-source">
                   <SourceBadge title={quiz.resource?.title} />
                 </div>
 
-                <div style={{ borderTop: "1px solid #edf1ea", paddingTop: "14px", marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "11px", color: "#8a948e" }}>
+                <div className="quiz-card-footer">
+                  <span className="quiz-card-date">
                     {new Date(quiz.created_at).toLocaleDateString()}
                   </span>
                   <Link
                     href={role === "student" ? `/student/quizzes/${quiz.id}` : `/teacher/quizzes/${quiz.id}`}
-                    style={{ fontSize: "12px", color: "#32735f", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
+                    className="quiz-card-link"
                   >
                     {role === "student" ? "Start Quiz ↗" : "View Quiz ↗"}
                   </Link>
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>

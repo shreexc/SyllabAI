@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { ViewTransition, useEffect, useState } from "react";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -38,7 +38,6 @@ export function AuthenticatedLayout({ role, children }: AuthenticatedLayoutProps
       void studentAuth.signOut();
     }
   };
-
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#F8F6FF]" role="status">
@@ -91,7 +90,13 @@ export function AuthenticatedLayout({ role, children }: AuthenticatedLayoutProps
             onOpenMobileMenu={() => setMobileMenuOpen(true)}
           />
           <main className="flex-1">
-            {children}
+            <ViewTransition
+              enter="route-fade-in"
+              exit="route-fade-out"
+              default="none"
+            >
+              {children}
+            </ViewTransition>
           </main>
         </div>
       </div>
