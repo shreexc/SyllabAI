@@ -255,7 +255,7 @@ export function SyllabAIHomePage() {
               onClick={() => {
                 const confirmed = window.confirm("Are you sure you want to sign out?");
                 if (confirmed) {
-                  router.push("/student/login");
+                  router.push("/login");
                 }
               }}
               className="home-sidebar-action flex items-center gap-3.5 rounded-[10px] px-2 py-1.5 text-left text-[16px] font-medium text-[#5A5565] transition-colors hover:text-[#7665F5]"

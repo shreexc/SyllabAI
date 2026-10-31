@@ -20,6 +20,14 @@ const typeFilters: Array<{ label: string; value: PreparationType | "all" }> = [
   { label: "Other", value: "other" },
 ];
 
+const studentTypeFilters = [
+  { label: "All materials", value: "all" },
+  { label: "Quizzes", value: "quiz" },
+  { label: "Chat", value: "chat" },
+  { label: "Flashcards", value: "flashcard" },
+  { label: "Animation", value: "animation" },
+] as const;
+
 const typeNames: Record<PreparationType, string> = {
   quiz: "Quiz",
   short_note: "Short notes",
@@ -53,9 +61,212 @@ function typeIcon(type: PreparationType): string {
   return { quiz: "?", short_note: "≡", flashcard: "▱", image: "▧", animation: "▷", other: "＋" }[type];
 }
 
+function dateGroupLabel(date: string): string {
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) return "Earlier";
+
+  const now = new Date();
+  const itemDay = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const dayDifference = Math.round((today.getTime() - itemDay.getTime()) / 86_400_000);
+  if (dayDifference === 0) return "Today";
+  if (dayDifference === 1) return "Yesterday";
+  return parsedDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
+function monthValue(date: string): string | null {
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) return null;
+  return `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, "0")}`;
+}
+
+type HistoryDateFilter = "all" | "today" | "week";
+
+function StudentHistoryTypeIcon({ type }: { type: (typeof studentTypeFilters)[number]["value"] }) {
+  const iconProps = {
+    width: 18,
+    height: 18,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.6,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true as const,
+  };
+
+  if (type === "quiz") {
+    return <svg {...iconProps}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="9" y1="12" x2="15" y2="12" /><line x1="9" y1="16" x2="13" y2="16" /></svg>;
+  }
+  if (type === "chat") {
+    return <svg {...iconProps}><rect x="4" y="6" width="16" height="13" rx="3" /><path d="M12 2v4" /><circle cx="9" cy="12" r="1.5" fill="currentColor" /><circle cx="15" cy="12" r="1.5" fill="currentColor" /><path d="M9 16h6M2 11h2M20 11h2" /></svg>;
+  }
+  if (type === "flashcard") {
+    return <svg {...iconProps}><path d="M5 19 9 5h10l-4 14H5z" /></svg>;
+  }
+  if (type === "animation") {
+    return <svg {...iconProps}><polygon points="7 4 19 12 7 20 7 4" /></svg>;
+  }
+  return <svg {...iconProps}><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></svg>;
+}
+
 function errorText(error: unknown): string {
   if (error instanceof ApiRequestError) return error.message;
   return error instanceof Error ? error.message : "Could not load your preparation history.";
+}
+
+function StudentHistoryView({
+  items,
+  loading,
+  error,
+  typeFilter,
+  onTypeFilterChange,
+  prepare,
+  onRetry,
+  onCancel,
+}: {
+  items: PreparationRequest[];
+  loading: boolean;
+  error: string | null;
+  typeFilter: PreparationType | "all";
+  onTypeFilterChange: (value: PreparationType | "all") => void;
+  prepare: string;
+  onRetry: () => void;
+  onCancel: (id: string) => Promise<void>;
+}) {
+  const [dateFilter, setDateFilter] = useState<HistoryDateFilter>("all");
+  const [monthFilter, setMonthFilter] = useState("all");
+  const availableMonths = useMemo(() => {
+    const months = new Map<string, string>();
+    for (const item of items) {
+      const month = monthValue(item.created_at);
+      if (!month || months.has(month)) continue;
+      const [year, monthNumber] = month.split("-").map(Number);
+      months.set(month, new Date(year, monthNumber - 1).toLocaleDateString(undefined, { month: "long", year: "numeric" }));
+    }
+    return [...months.entries()].sort(([first], [second]) => second.localeCompare(first));
+  }, [items]);
+  const visibleItems = useMemo(() => items.filter((item) => {
+    if (monthFilter !== "all" && monthValue(item.created_at) !== monthFilter) return false;
+    if (dateFilter === "all" || monthFilter !== "all") return true;
+
+    const date = new Date(item.created_at);
+    if (Number.isNaN(date.getTime())) return false;
+    const now = new Date();
+    const itemDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const daysAgo = Math.floor((today.getTime() - itemDay.getTime()) / 86_400_000);
+    if (dateFilter === "today") return daysAgo === 0;
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    return itemDay >= startOfWeek && itemDay <= today;
+  }), [dateFilter, items, monthFilter]);
+  const groups = useMemo(() => {
+    const grouped = new Map<string, PreparationRequest[]>();
+    for (const item of visibleItems) {
+      const label = dateGroupLabel(item.created_at);
+      grouped.set(label, [...(grouped.get(label) ?? []), item]);
+    }
+    return [...grouped.entries()];
+  }, [visibleItems]);
+
+  return (
+    <main className="history-page history-page--student">
+      <section className="history-heading history-heading--student">
+        <div>
+          <span className="eyebrow">YOUR LEARNING WORK, KEPT TOGETHER</span>
+          <h1>Learning History &amp; Archives</h1>
+        </div>
+      </section>
+
+      <section className="history-toolbar history-toolbar--student" aria-label="Filter by material type">
+        <div className="history-type-filters" role="group" aria-label="Filter by material type">
+          {studentTypeFilters.map((filter) => {
+            const className = typeFilter === filter.value ? "history-filter history-filter--active" : "history-filter";
+            const content = <><StudentHistoryTypeIcon type={filter.value} /><span>{filter.label}</span></>;
+            return filter.value === "chat" ? (
+              <Link key={filter.value} href="/student/chat" className={className}>{content}</Link>
+            ) : (
+              <button
+                key={filter.value}
+                type="button"
+                className={className}
+                aria-pressed={typeFilter === filter.value}
+                onClick={() => onTypeFilterChange(filter.value)}
+              >
+                {content}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="history-date-toolbar" aria-label="Filter by date">
+        <div className="history-date-presets" role="group" aria-label="Date range">
+          <button type="button" className={dateFilter === "all" && monthFilter === "all" ? "history-date-filter history-date-filter--active" : "history-date-filter"} onClick={() => { setDateFilter("all"); setMonthFilter("all"); }}>All Time</button>
+          <button type="button" className={dateFilter === "today" ? "history-date-filter history-date-filter--active" : "history-date-filter"} onClick={() => { setDateFilter("today"); setMonthFilter("all"); }}>Today</button>
+          <button type="button" className={dateFilter === "week" ? "history-date-filter history-date-filter--active" : "history-date-filter"} onClick={() => { setDateFilter("week"); setMonthFilter("all"); }}>This Week</button>
+        </div>
+        <label className="history-month-select">
+          <span>Select Month:</span>
+          <span className="history-month-select-control">
+            <select aria-label="Select month and year" value={monthFilter} onChange={(event) => { setMonthFilter(event.target.value); setDateFilter("all"); }}>
+              <option value="all">All Months and Years</option>
+              {availableMonths.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </label>
+      </section>
+
+      {error && <div className="history-error" role="alert"><span>{error}</span><button type="button" onClick={onRetry}>Try again</button></div>}
+
+      <section className={`history-student-content${!loading && !error && items.length === 0 ? " history-layout--empty" : ""}`}>
+        {loading ? (
+          <div className="history-skeleton" aria-label="Loading preparation history"><span /><span /><span /><span /></div>
+        ) : error ? (
+          <div className="history-empty history-empty--student" role="status">
+            <h2>History unavailable</h2>
+            <p>We couldn’t load your learning history. Please try again.</p>
+          </div>
+        ) : items.length === 0 ? (
+          <div className="history-empty history-empty--student" role="status">
+            <h2>No Learning History Yet</h2>
+          </div>
+        ) : groups.length === 0 ? (
+          <div className="history-no-results" role="status">No learning materials found for this date range.</div>
+        ) : (
+          <div className="history-student-feed">
+            {groups.map(([label, groupItems]) => (
+              <section key={label} className="history-date-group" aria-label={label}>
+                <h2 className="history-date-divider"><span>{label}</span></h2>
+                <div className="history-student-list">
+                  {groupItems.map((item) => (
+                    <details key={item.id} className="history-student-item">
+                      <summary>
+                        <span className={`history-student-item-icon history-student-item-icon--${item.preparation_type}`}>{typeIcon(item.preparation_type)}</span>
+                        <span className="history-student-item-title">{item.resource.title}</span>
+                        <span className="history-student-item-meta">{item.status === "completed" ? relativeDate(item.created_at) : statusNames[item.status]}</span>
+                      </summary>
+                      <div className="history-student-item-details">
+                        <div className="history-student-detail-head"><span>{typeNames[item.preparation_type]}</span><span>{statusNames[item.status]} · {relativeDate(item.created_at)}</span></div>
+                        {item.status === "completed" && <><p>Your prepared material is ready to revisit.</p><PreparationResult preparation={item} /></>}
+                        {(item.status === "pending" || item.status === "processing") && <ProcessingStatus preparation={item} onCancel={() => void onCancel(item.id)} />}
+                        {item.status === "failed" && <div className="history-failure"><strong>We couldn’t prepare this material.</strong><p>{item.error_message || "The source could not be processed. Please try again with a different resource."}</p><Link href={prepare} className="text-action">Try a new preparation →</Link></div>}
+                        {item.status === "cancelled" && <div className="history-cancelled"><p>This preparation was cancelled before completion.</p><Link href={prepare} className="text-action">Prepare this source again →</Link></div>}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
+  );
 }
 
 export function PreparationHistoryPage({ role }: { role: UserRole }) {
@@ -112,6 +323,21 @@ export function PreparationHistoryPage({ role }: { role: UserRole }) {
     }
   };
 
+  if (role === "student") {
+    return (
+      <StudentHistoryView
+        items={items}
+        loading={loading}
+        error={error}
+        typeFilter={typeFilter}
+        onTypeFilterChange={setTypeFilter}
+        prepare={prepare}
+        onRetry={() => void load()}
+        onCancel={cancelJob}
+      />
+    );
+  }
+
   return (
     <main className={`history-page history-page--${role}`}>
       <header className="history-topbar">
@@ -136,7 +362,7 @@ export function PreparationHistoryPage({ role }: { role: UserRole }) {
       <section className="history-layout">
         <div className="history-list-panel">
           {loading ? <div className="history-skeleton" aria-label="Loading preparation history"><span /><span /><span /><span /></div> : items.length === 0 ? (
-            <div className="history-empty"><span className="history-empty-icon">↗</span><h2>{typeFilter === "all" && statusFilter === "all" ? "Your story starts here" : "Nothing matches these filters"}</h2><p>{typeFilter === "all" && statusFilter === "all" ? "Prepared quizzes, notes, flashcards, images, animations and custom materials will be saved here." : "Try another material type or status, or start a new preparation."}</p><Link href={prepare} className="preparation-action">Prepare learning material <span>↗</span></Link></div>
+            <div className="history-empty"><span className="history-empty-icon">↗</span><h2>Your story starts here</h2><p>Prepared quizzes, notes, flashcards, images, animations and custom materials will be saved here.</p><Link href={prepare} className="preparation-action">Prepare learning material <span>↗</span></Link></div>
           ) : (
             <>
               <div className="history-list-heading"><span>{items.length} {items.length === 1 ? "item" : "items"}</span>{activeCount > 0 && <span className="history-active-count"><i />{activeCount} processing</span>}</div>
@@ -151,7 +377,6 @@ export function PreparationHistoryPage({ role }: { role: UserRole }) {
             </>
           )}
         </div>
-
         <aside className="history-detail-panel" aria-label="Selected preparation details">
           {selected ? <>
             <div className="history-detail-head"><span className="history-item-icon">{typeIcon(selected.preparation_type)}</span><div><span className="eyebrow">{typeNames[selected.preparation_type]}</span><h2>{selected.resource.title}</h2></div></div>

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PreparationHistoryPage } from "@/components/history/PreparationHistoryPage";
 import { listPreparations } from "@/lib/learning-api";
@@ -27,10 +27,42 @@ describe("preparation history", () => {
   it("lists a user's saved preparations and shows selected output details", async () => {
     render(<PreparationHistoryPage role="student" />);
 
-    expect(await screen.findByRole("heading", { name: "Preparation history" })).toBeInTheDocument();
-    expect(await screen.findByRole("button", { name: /Cell biology/ })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Learning History & Archives" })).toBeInTheDocument();
+    expect(await screen.findByText("Cell biology")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Cell biology"));
     expect(await screen.findByText("Cell biology quiz")).toBeInTheDocument();
     expect(listPreparations).toHaveBeenCalledWith("student", {});
+  });
+
+  it("shows a centered empty state when a student has no learning history", async () => {
+    vi.mocked(listPreparations).mockResolvedValue([]);
+    render(<PreparationHistoryPage role="student" />);
+
+    expect(await screen.findByRole("heading", { name: "No Learning History Yet" })).toBeInTheDocument();
+    expect(screen.queryByText("Upload documents or generate quizzes and flashcards to build your archive.")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Prepare learning material/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
+
+  it("shows only the requested student material tabs with sidebar-matching icons", async () => {
+    vi.mocked(listPreparations).mockResolvedValue([]);
+    render(<PreparationHistoryPage role="student" />);
+
+    expect(await screen.findByRole("button", { name: /All materials/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Quizzes/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Chat/ })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByRole("button", { name: /Flashcards/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Animation/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Short notes|Images/ })).not.toBeInTheDocument();
+  });
+
+  it("does not show an empty archive when history fails to load", async () => {
+    vi.mocked(listPreparations).mockRejectedValue(new Error("offline"));
+    render(<PreparationHistoryPage role="student" />);
+
+    expect(await screen.findByRole("heading", { name: "History unavailable" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "No Learning History Yet" })).not.toBeInTheDocument();
+    expect(within(screen.getByRole("alert")).getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 
   it("passes material and status filters to the history API", async () => {
