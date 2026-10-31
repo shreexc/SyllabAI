@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DifficultyBadge } from "@/components/shared/DifficultyBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
@@ -27,11 +27,16 @@ export function AnimationListPage({ role }: AnimationListPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const fetchAnimations = useCallback(
+    () => listPreparations(role, { type: "animation" }),
+    [role],
+  );
+
   const loadAnimations = async () => {
     setLoading(true);
     setError(null);
     try {
-      const items = await listPreparations(role, { type: "animation" });
+      const items = await fetchAnimations();
       setAnimations(items);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load animations.");
@@ -41,8 +46,30 @@ export function AnimationListPage({ role }: AnimationListPageProps) {
   };
 
   useEffect(() => {
-    void loadAnimations();
-  }, [role]);
+    let active = true;
+
+    fetchAnimations()
+      .then((items) => {
+        if (active) {
+          setAnimations(items);
+          setError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (active) {
+          setError(err instanceof Error ? err.message : "Failed to load animations.");
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [fetchAnimations]);
 
   const filteredAnimations = useMemo(() => {
     return animations.filter((a) => {
@@ -53,34 +80,54 @@ export function AnimationListPage({ role }: AnimationListPageProps) {
   }, [animations, searchQuery]);
 
   return (
-    <div className="animation-list-page">
+    <div className={`animation-list-page${role === "student" ? " animation-list-page--student" : ""}`}>
       <PageHeader
         eyebrow="ANIMATED VISUAL EXPLANATIONS"
         title={role === "teacher" ? "Teaching Animations" : "Educational Animations"}
         description="Step-by-step animated storyboard lessons and visual process explanations."
-        actionHref={`/${role}/prepare?type=animation`}
-        actionLabel="＋ Create Animation"
+        actionHref={role === "teacher" ? `/${role}/prepare?type=animation` : undefined}
+        actionLabel={role === "teacher" ? "＋ Create Animation" : undefined}
       />
 
-      <div style={{ marginBottom: "24px", maxWidth: "380px" }}>
-        <input
-          type="search"
-          placeholder="Search animations by title…"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="field-input"
-          aria-label="Search animations"
-        />
-      </div>
+      {(role === "teacher" || animations.length > 0) && (
+        <div className="animation-filter-toolbar">
+          <input
+            type="search"
+            placeholder="Search animations by title…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="field-input"
+            aria-label="Search animations"
+          />
+        </div>
+      )}
 
-      {loading && <LoadingSkeleton type="cards" count={3} />}
+      {loading &&
+        (role === "student" ? (
+          <div className="animation-list-loading-state">
+            <LoadingSkeleton type="cards" count={3} />
+          </div>
+        ) : (
+          <LoadingSkeleton type="cards" count={3} />
+        ))}
 
       {error && <ErrorState message={error} onRetry={loadAnimations} />}
 
       {!loading && !error && filteredAnimations.length === 0 && (
         <EmptyState
-          icon="▷"
-          title={searchQuery ? "No matching animations found" : "No animations generated yet"}
+          className={role === "student" ? "animation-empty-state" : undefined}
+          icon={
+            role === "student" ? (
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <path d="M11 7.5c0-1.54 1.67-2.5 3-1.73l13 7.5a2 2 0 0 1 0 3.46l-13 7.5c-1.33.77-3-.19-3-1.73v-15Z" fill="currentColor" />
+              </svg>
+            ) : "▷"
+          }
+          title={
+            searchQuery
+              ? "No matching animations found"
+              : "No animations generated yet"
+          }
           description={
             searchQuery
               ? "Try adjusting your search terms."
