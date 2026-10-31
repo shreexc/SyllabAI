@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { AppSidebar } from "@/components/layout/AppSidebar";
-import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { Topbar } from "@/components/layout/Topbar";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useStudentAuth } from "@/hooks/useStudentAuth";
@@ -42,45 +41,60 @@ export function AuthenticatedLayout({ role, children }: AuthenticatedLayoutProps
 
   if (loading) {
     return (
-      <main className="dashboard-loading" role="status">
-        <div className="loading-spinner" aria-hidden="true" />
-        <p>Opening your {role === "teacher" ? "teaching" : "learning"} space…</p>
+      <main className="flex min-h-screen items-center justify-center bg-[#F8F6FF]" role="status">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-9 w-9 animate-spin rounded-full border-3 border-[#7665F5] border-t-transparent" />
+          <p className="text-[15px] font-medium text-[#756A6A]">
+            Opening your {role === "teacher" ? "teaching" : "learning"} space…
+          </p>
+        </div>
       </main>
     );
   }
 
   if (!user || user.role !== role) {
     return (
-      <main className="dashboard-loading" role="alert">
-        <p>{error || "Please sign in to continue."}</p>
-        <Link
-          href={role === "teacher" ? ROUTES.teacher.login : ROUTES.student.login}
-          className="dashboard-loading-link"
-        >
-          Go to {role === "teacher" ? "educator" : "student"} sign in →
-        </Link>
+      <main className="flex min-h-screen items-center justify-center bg-[#F8F6FF]" role="alert">
+        <div className="flex flex-col items-center gap-4 rounded-[15px] bg-white p-8 shadow-sm">
+          <p className="text-[15px] font-medium text-[#756A6A]">
+            {error || "Please sign in to continue."}
+          </p>
+          <Link
+            href={role === "teacher" ? ROUTES.teacher.login : ROUTES.student.login}
+            className="rounded-[12px] bg-[#7665F5] px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Go to {role === "teacher" ? "educator" : "student"} sign in →
+          </Link>
+        </div>
       </main>
     );
   }
 
   return (
-    <div className={`dashboard-page dashboard-page--${role}`}>
-      <AppSidebar
-        role={role}
-        onSignOut={handleSignOut}
-        isOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-      />
-      <div className="dashboard-content-area">
-        <Topbar
+    <div
+      className="min-h-screen w-full font-ui"
+      style={{
+        backgroundColor: "#F8F6FF",
+        color: "#000000",
+      }}
+    >
+      <div className="mx-auto flex max-w-[1440px] gap-6 p-6 min-h-screen">
+        <AppSidebar
           role={role}
-          onOpenMobileMenu={() => setMobileMenuOpen(true)}
+          onSignOut={handleSignOut}
+          isOpen={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
         />
-        <main className="dashboard-main-content">
-          {children}
-        </main>
+        <div className="flex flex-1 flex-col gap-6">
+          <Topbar
+            role={role}
+            onOpenMobileMenu={() => setMobileMenuOpen(true)}
+          />
+          <main className="flex-1">
+            {children}
+          </main>
+        </div>
       </div>
-      <MobileNavigation role={role} />
     </div>
   );
 }

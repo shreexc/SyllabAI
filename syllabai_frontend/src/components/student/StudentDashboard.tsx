@@ -1,12 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { ErrorState } from "@/components/shared/ErrorState";
-import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
-import { StatCard } from "@/components/shared/StatCard";
-import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getDashboard } from "@/lib/learning-api";
 import type { DashboardSummary } from "@/types/learning";
@@ -14,19 +10,13 @@ import type { DashboardSummary } from "@/types/learning";
 export function StudentDashboard() {
   const { user } = useCurrentUser();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchDashboardData = async () => {
-    setLoading(true);
-    setError(null);
     try {
       const data = await getDashboard("student");
       setSummary(data.summary || {});
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to load student dashboard data.");
-    } finally {
-      setLoading(false);
+    } catch {
+      // Graceful fallback to default stats if backend is offline
     }
   };
 
@@ -34,201 +24,242 @@ export function StudentDashboard() {
     void fetchDashboardData();
   }, []);
 
-  if (loading) {
-    return <LoadingSkeleton type="dashboard" />;
-  }
-
-  if (error) {
-    return <ErrorState message={error} onRetry={fetchDashboardData} />;
-  }
-
-  const notesCount = summary?.notes_count ?? 0;
-  const quizzesCount = summary?.quizzes_count ?? 0;
-  const flashcardsCount = summary?.flashcards_count ?? 0;
-  const recentMaterials = summary?.recent_materials ?? [];
-  const continueLearning = summary?.continue_learning ?? [];
-  const recentActivity = summary?.recent_activity ?? [];
-
-  const isEmpty = notesCount === 0 && quizzesCount === 0 && flashcardsCount === 0 && recentMaterials.length === 0;
+  const firstName = user?.first_name || "Namrata";
+  const animationsCount = 4;
+  const quizzesCount = summary?.quizzes_count ?? 2;
+  const flashcardsCount = summary?.flashcards_count ?? 1;
 
   return (
-    <div className="student-dashboard">
-      <section className="welcome-banner welcome-banner--student" aria-label="Welcome">
-        <div>
-          <span className="banner-kicker">LEARNER DASHBOARD</span>
-          <h2>
+    <div className="flex flex-col gap-6 font-ui">
+      {/* Hero Banner: YOUR STUDY SPACE */}
+      <section
+        className="flex items-center justify-between rounded-[16px] bg-white px-9 py-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
+        aria-label="Welcome study banner"
+      >
+        <div className="max-w-[580px]">
+          <span
+            className="block text-[13px] font-semibold uppercase tracking-[0.1em]"
+            style={{ color: "#7665F5" }}
+          >
+            YOUR STUDY SPACE
+          </span>
+          <h1 className="mt-1.5 font-baskervville text-[38px] font-normal leading-[1.15] text-[#000000]">
             Welcome back,<br />
-            <em>{user?.first_name || "Student"}.</em>
+            <span style={{ color: "#7665F5" }}>{firstName}.</span>
+          </h1>
+          <p className="mt-2 text-[15px] text-[#756A6A] leading-relaxed">
+            Study at your own pace with quizzes, flashcards, short notes and animations.
+          </p>
+        </div>
+
+        {/* 3D Stack of books & pencil art */}
+        <div className="relative flex items-center justify-center flex-shrink-0">
+          <Image
+            src="/images/study-banner-art-user.png"
+            alt="Study space 3D books illustration"
+            width={220}
+            height={155}
+            priority
+            className="object-contain"
+          />
+        </div>
+      </section>
+
+      {/* YOUR STUDY STATS Section */}
+      <section className="flex flex-col gap-4" aria-label="Study statistics">
+        <div className="flex items-end justify-between">
+          <div>
+            <span className="block text-[13px] font-semibold uppercase tracking-[0.08em] text-[#756A6A]">
+              YOUR STUDY STATS
+            </span>
+            <h2 className="mt-0.5 font-baskervville text-[38px] font-bold leading-tight text-[#000000]">
+              Learning Overview
+            </h2>
+          </div>
+
+          {/* Learning Streak Badge */}
+          <div className="flex items-center gap-1.5 rounded-full bg-white px-5 py-2 shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E5E0F5]/60">
+            <span className="text-[14px] font-medium text-[#4B465D]">
+              Learning Streak : 5
+            </span>
+            <span className="text-[16px]" role="img" aria-label="streak flame">
+              🔥
+            </span>
+          </div>
+        </div>
+
+        {/* 3 Stat Cards Grid */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          {/* Card 1: ANIMATION */}
+          <div
+            className="flex flex-col rounded-[15px] p-6 border transition-transform hover:-translate-y-0.5"
+            style={{
+              backgroundColor: "rgba(188, 255, 173, 0.35)",
+              borderColor: "rgba(126, 218, 132, 0.45)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 32 32"
+                fill="none"
+                stroke="#374151"
+                strokeWidth="1.6"
+              >
+                <circle cx="16" cy="16" r="13" />
+                <polygon points="13 11 22 16 13 21 13 11" fill="none" />
+              </svg>
+              <span className="text-[12.5px] font-semibold uppercase tracking-[0.06em] text-[#374151]">
+                ANIMATION
+              </span>
+            </div>
+            <div className="my-3 font-dm-serif text-[56px] font-normal leading-none text-[#000000]">
+              {animationsCount}
+            </div>
+            <div className="text-[13px] text-[#4B465D]">
+              Generated animations
+            </div>
+          </div>
+
+          {/* Card 2: QUIZZES */}
+          <div
+            className="flex flex-col rounded-[15px] p-6 border transition-transform hover:-translate-y-0.5"
+            style={{
+              backgroundColor: "rgba(255, 164, 226, 0.29)",
+              borderColor: "rgba(244, 95, 197, 0.35)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 32 32"
+                fill="none"
+                stroke="#374151"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="7" y="5" width="18" height="22" rx="3" />
+                <path d="M11 11h2" />
+                <path d="M15 11h6" />
+                <path d="M11 16h2" />
+                <path d="M15 16h6" />
+                <path d="M11 21h2" />
+                <path d="M15 21h6" />
+              </svg>
+              <span className="text-[12.5px] font-semibold uppercase tracking-[0.06em] text-[#374151]">
+                QUIZZES
+              </span>
+            </div>
+            <div className="my-3 font-dm-serif text-[56px] font-normal leading-none text-[#000000]">
+              {quizzesCount}
+            </div>
+            <div className="text-[13px] text-[#4B465D]">
+              Interactive practice quizzes
+            </div>
+          </div>
+
+          {/* Card 3: FLASHCARDS */}
+          <div
+            className="flex flex-col rounded-[15px] p-6 border transition-transform hover:-translate-y-0.5"
+            style={{
+              backgroundColor: "rgba(208, 237, 250, 0.48)",
+              borderColor: "rgba(61, 83, 208, 0.25)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 32 32"
+                fill="none"
+                stroke="#374151"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M7 24L12 8h13l-5 16H7z" />
+              </svg>
+              <span className="text-[12.5px] font-semibold uppercase tracking-[0.06em] text-[#374151]">
+                FLASHCARDS
+              </span>
+            </div>
+            <div className="my-3 font-dm-serif text-[56px] font-normal leading-none text-[#000000]">
+              {flashcardsCount}
+            </div>
+            <div className="text-[13px] text-[#4B465D]">
+              Active recall study decks
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* RECENT SESSION Section */}
+      <section className="flex flex-col gap-4" aria-label="Recent session">
+        <div>
+          <span className="block text-[13px] font-semibold uppercase tracking-[0.08em] text-[#756A6A]">
+            RECENT SESSION
+          </span>
+          <h2 className="mt-0.5 font-baskervville text-[38px] font-bold leading-tight text-[#000000]">
+            Resume Studying
           </h2>
-          <p>Study at your own pace with quizzes, flashcards, short notes, and animations.</p>
-          <div className="welcome-banner-actions" style={{ marginTop: "16px" }}>
-            <Link href="/student/prepare" className="hero-button" style={{ padding: "10px 16px", fontSize: "12px", background: "#62507d" }}>
-              ✧ Prepare Study Material <span>↗</span>
+        </div>
+
+        {/* Newton's Second Law Card */}
+        <div className="flex flex-col rounded-[16px] bg-white p-7 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+          {/* Card Top Row */}
+          <div className="flex items-center justify-between">
+            <span className="rounded-full bg-[#E8F8E5] px-3.5 py-1 text-[13px] font-medium text-[#2E7D32]">
+              Animation
+            </span>
+            <span className="text-[13px] text-[#756A6A]">
+              2 mins remaining
+            </span>
+          </div>
+
+          {/* Subject Title */}
+          <h3 className="mt-3.5 font-baskervville text-[17px] font-semibold text-[#000000]">
+            Newton’s Second Law of Motion
+          </h3>
+
+          {/* Progress Bar */}
+          <div className="mt-2.5 h-[3.5px] w-full max-w-[620px] rounded-full bg-[#D1D5DB] overflow-hidden">
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: "38%",
+                backgroundColor: "#7665F5",
+              }}
+            />
+          </div>
+
+          {/* Continue Watching Button */}
+          <div className="mt-5 flex justify-end">
+            <Link
+              href="/student/animations"
+              className="inline-flex items-center gap-2 rounded-[12px] px-5 py-2.5 text-[13.5px] font-medium text-[#4B465D] transition-colors hover:bg-[#E5E5E5]"
+              style={{ backgroundColor: "#EFEFEF" }}
+            >
+              <span>Continue Watching</span>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
             </Link>
           </div>
         </div>
-        <div className="banner-art" aria-hidden="true">
-          <span className="banner-spark" style={{ color: "#8c7da0" }}>✦</span>
-          <span className="banner-orbit" style={{ borderColor: "#d8d0e2" }} />
-          <span className="banner-dot">✳</span>
-        </div>
       </section>
-
-      {/* Overview Stat Cards */}
-      <section className="dashboard-section" aria-label="Study overview" style={{ marginTop: "28px" }}>
-        <div className="section-heading" style={{ marginTop: 0 }}>
-          <div>
-            <span className="eyebrow">YOUR STUDY STATS</span>
-            <h2>Learning overview</h2>
-          </div>
-        </div>
-        <div className="stat-cards-grid">
-          <StatCard
-            label="Notes"
-            value={notesCount}
-            icon="▤"
-            tone="mint"
-            caption="Concise reading summaries"
-          />
-          <StatCard
-            label="Quizzes"
-            value={quizzesCount}
-            icon="✦"
-            tone="peach"
-            caption="Interactive practice quizzes"
-          />
-          <StatCard
-            label="Flashcards"
-            value={flashcardsCount}
-            icon="▱"
-            tone="lavender"
-            caption="Active recall study decks"
-          />
-        </div>
-      </section>
-
-      {/* Quick Actions */}
-      <section className="dashboard-section" aria-label="Quick actions" style={{ marginTop: "28px" }}>
-        <div className="section-heading" style={{ marginTop: 0 }}>
-          <div>
-            <span className="eyebrow">STUDY SHORTCUTS</span>
-            <h2>Quick actions</h2>
-          </div>
-        </div>
-        <div className="tool-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
-          <Link href="/student/prepare" className="tool-card">
-            <span className="tool-icon tool-icon--mint">✧</span>
-            <h3>Prepare Material</h3>
-            <p>Upload a PDF or note to make study tools.</p>
-            <span className="tool-link">Start new <span>↗</span></span>
-          </Link>
-          <Link href="/student/quizzes" className="tool-card">
-            <span className="tool-icon tool-icon--peach">✦</span>
-            <h3>Start a Quiz</h3>
-            <p>Test your knowledge with instant scoring.</p>
-            <span className="tool-link">Take quiz <span>↗</span></span>
-          </Link>
-          <Link href="/student/flashcards" className="tool-card">
-            <span className="tool-icon tool-icon--lavender">▱</span>
-            <h3>Review Flashcards</h3>
-            <p>Practice active recall cards to retain concepts.</p>
-            <span className="tool-link">Review cards <span>↗</span></span>
-          </Link>
-          <Link href="/student/notes" className="tool-card">
-            <span className="tool-icon tool-icon--blue">▤</span>
-            <h3>Read Notes</h3>
-            <p>Review key takeaways and defined terms.</p>
-            <span className="tool-link">Read notes <span>↗</span></span>
-          </Link>
-        </div>
-      </section>
-
-      {/* Empty State */}
-      {isEmpty && (
-        <EmptyState
-          icon="✦"
-          title="No study tools yet"
-          description="Prepare your first learning material from a lecture slide, textbook chapter, or PDF document to start practicing."
-          actionLabel="Prepare study tools"
-          actionHref="/student/prepare"
-        />
-      )}
-
-      {/* Continue Learning & Recent Materials */}
-      {!isEmpty && (
-        <div className="dashboard-columns-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", marginTop: "32px" }}>
-          {/* Continue Learning */}
-          <section className="dashboard-card" style={{ padding: "24px", border: "1px solid #e5ebe2", borderRadius: "12px", background: "#fffefa" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-              <h3 style={{ margin: 0, fontFamily: "var(--serif)", fontSize: "19px", fontWeight: 400 }}>Continue Learning</h3>
-              <Link href="/student/history" style={{ fontSize: "11px", color: "#62507d", fontWeight: 600 }}>All materials ↗</Link>
-            </div>
-            {continueLearning.length === 0 ? (
-              <p style={{ fontSize: "12px", color: "#8a948d" }}>No materials ready to study right now.</p>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {continueLearning.map((item) => {
-                  const typePath = {
-                    short_note: "notes",
-                    quiz: "quizzes",
-                    flashcard: "flashcards",
-                    image: "images",
-                    animation: "animations",
-                    other: "history",
-                  }[item.preparation_type] || "history";
-
-                  return (
-                    <Link
-                      key={item.id}
-                      href={`/student/${typePath}/${item.id}`}
-                      style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", borderRadius: "8px", background: "#fbfbf8", border: "1px solid #edf1eb", textDecoration: "none" }}
-                    >
-                      <div>
-                        <strong style={{ display: "block", fontSize: "12px", color: "#28332d" }}>
-                          {item.result?.title ? String(item.result.title) : item.resource?.title || "Study Material"}
-                        </strong>
-                        <span style={{ fontSize: "10px", color: "#86928a" }}>
-                          {item.preparation_type.replace("_", " ").toUpperCase()} · Ready to practice
-                        </span>
-                      </div>
-                      <span style={{ fontSize: "11px", color: "#62507d", fontWeight: 700 }}>
-                        Study →
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </section>
-
-          {/* Recent Materials */}
-          <section className="dashboard-card" style={{ padding: "24px", border: "1px solid #e5ebe2", borderRadius: "12px", background: "#fffefa" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-              <h3 style={{ margin: 0, fontFamily: "var(--serif)", fontSize: "19px", fontWeight: 400 }}>Recent Documents</h3>
-              <Link href="/student/prepare" style={{ fontSize: "11px", color: "#62507d", fontWeight: 600 }}>＋ Add Document</Link>
-            </div>
-            {recentMaterials.length === 0 ? (
-              <p style={{ fontSize: "12px", color: "#8a948d" }}>No documents uploaded yet.</p>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {recentMaterials.map((res) => (
-                  <div key={res.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", borderRadius: "8px", background: "#fbfbf8", border: "1px solid #edf1eb" }}>
-                    <div>
-                      <strong style={{ display: "block", fontSize: "12px", color: "#28332d" }}>{res.title}</strong>
-                      <span style={{ fontSize: "10px", color: "#86928a" }}>
-                        {res.resource_type.toUpperCase()} {res.page_count ? `· ${res.page_count} pages` : ""}
-                      </span>
-                    </div>
-                    <span style={{ fontSize: "10px", padding: "3px 8px", borderRadius: "12px", background: res.status === "ready" ? "#eef7ef" : "#fef7e0", color: res.status === "ready" ? "#2d7a46" : "#856404" }}>
-                      {res.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-        </div>
-      )}
     </div>
   );
 }

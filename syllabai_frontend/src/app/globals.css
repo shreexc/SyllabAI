@@ -12,6 +12,54 @@
 @import "tailwindcss";
 
 :root {
+  /* SyllabAI Design System Tokens (DESIGN.md) */
+  --color-background:         #F8F6FF;
+  --color-surface:            #FFFFFF;
+  --color-surface-chat:       #F0ECFE;
+  --color-surface-continue:   #EFEFEF;
+
+  --color-text-primary:       #000000;
+  --color-text-muted:         #756A6A;
+  --color-text-auth-title:    #20243A;
+  --color-text-card:          #4B465D;
+  --color-text-header-cta:    #FCF7F7;
+  --color-link-lavender:      #BF97D8;
+
+  --color-brand-primary:      #806CF4;
+  --color-brand-mid:          #9E8FFA;
+  --color-brand-light:        #B8A8F8;
+  --color-brand-deep:         #6555C1;
+  --color-brand-dark:         #30285B;
+  --color-brand-student:      #7665F5;
+  --color-brand-badge:        #DBD3FB;
+  --color-brand-avatar:       #D7D1FA;
+  --gradient-primary-button:  linear-gradient(180deg, #806CF4 0%, #9E8FFA 50%, #B8A8F8 100%);
+  --gradient-brand-tile:      linear-gradient(135deg, #30285B 0%, #6555C1 100%);
+
+  --color-border-neutral:     #B3B3B3;
+  --color-border-subtle:      #DEDEDE;
+  --color-border-card:        #E5E0F5;
+  --color-divider-card:       #E0DDDD;
+
+  --color-educator-green:     #7EDA84;
+  --color-success-green:      #49B24F;
+  --color-destructive-text:   #CA4A4A;
+  --color-destructive-border: #DC3B3E;
+  --color-history-pink:       #F45FC5;
+  --color-streak-orange:      #E3764B;
+  --color-workflow-blue:      #3D53D0;
+
+  --color-tint-animation:     rgba(188, 255, 173, 0.35); /* #BCFFAD @ 35% */
+  --color-tint-quiz:          rgba(255, 164, 226, 0.29); /* #FFA4E2 @ 29% */
+  --color-tint-flashcard:     rgba(208, 237, 250, 0.48); /* #D0EDFA @ 48% */
+  --color-tint-chat:          rgba(255, 141, 143, 0.50); /* #FF8D8F @ 50% */
+  --color-tint-idea:          rgba(255, 245, 153, 0.50); /* #FFF599 @ 50% */
+  --color-tint-resource:      rgba(255, 190, 161, 0.48); /* #FFBEA1 @ 48% */
+
+  --font-ui:                  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display:             "Ramaraja", serif;
+  --font-editorial:           "Baskervville", Georgia, serif;
+  --font-brand-numerals:      "DM Serif Display", Georgia, serif;
   --ink: #242d2b;
   --muted: #75807c;
   --paper: #fbfaf6;
@@ -1840,4 +1888,282 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   .dashboard-main-content { padding: 20px 16px 90px; }
   .note-reading-article { padding: 24px 18px; }
   .quiz-attempt-box { padding: 20px 16px; }
+}
+
+.font-ui, .font-inter { font-family: var(--font-ui) !important; }
+.font-editorial, .font-baskervville { font-family: var(--font-editorial) !important; }
+.font-brand-numerals, .font-dm-serif { font-family: var(--font-brand-numerals) !important; }
+.font-display, .font-ramaraja { font-family: var(--font-display) !important; }
+
+/* Student home dashboard */
+.home-layout {
+  width: 100%;
+  min-height: 100vh;
+  gap: 21px;
+  padding: 30px 29px 0 34px;
+}
+.home-sidebar {
+  width: 340px;
+  height: 955px;
+  min-height: 0;
+  flex: 0 0 340px;
+  padding: 17px 36px 30px;
+  border-radius: 15px;
+}
+.home-brand { gap: 16px; }
+.home-brand-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  color: #000000;
+}
+.home-brand-mark span { font-size: 36px; }
+.home-brand-name { font-size: 24px; font-weight: 500; }
+.home-nav {
+  gap: 0;
+  margin-top: 83px;
+}
+.home-nav-link {
+  height: 50px;
+  gap: 16px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: #756A6A;
+  font-size: 20px;
+}
+.home-nav-link:hover { color: #7665F5; background: #F8F6FF; }
+.home-nav-icon { display: flex; color: #8A8282; }
+.home-nav-icon svg { width: 26px; height: 26px; }
+.home-sidebar-actions {
+  gap: 6px;
+  padding-top: 0;
+  border-top: 0;
+}
+.home-sidebar-action {
+  min-height: 48px;
+  gap: 16px;
+  padding: 0 8px;
+  color: #756A6A;
+  font-size: 18px;
+}
+.home-sidebar-action-icon { width: 51px; height: 48px; }
+.home-sidebar-action-icon svg { width: 26px; height: 26px; }
+.home-main { min-width: 0; gap: 0; }
+.home-topbar {
+  height: 79px;
+  flex: 0 0 79px;
+  margin-bottom: 50px;
+  padding: 0 35px;
+  border-radius: 15px;
+}
+.home-search { width: 501px; max-width: 501px; }
+.home-search-icon { left: 14px; display: flex; }
+.home-search-icon svg { width: 25px; height: 25px; }
+.home-search-input {
+  height: 42px;
+  padding-left: 48px;
+  border-radius: 15px;
+  font-size: 20px;
+}
+.home-profile { gap: 8px; }
+.home-avatar { width: 40px; height: 40px; font-size: 16px; }
+.home-user-name { font-size: 16px; }
+.home-welcome {
+  position: relative;
+  height: 214px;
+  min-height: 214px;
+  margin-bottom: 34px;
+  padding: 25px;
+  border-radius: 15px;
+}
+.home-welcome-copy { max-width: 650px; }
+.home-welcome-art {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  width: 220px;
+  height: 155px;
+  transform: translateY(-50%);
+}
+.home-eyebrow { font-size: 18px; }
+.home-welcome-title {
+  margin-top: 6px;
+  font-size: 48px;
+  line-height: 1.15;
+}
+.home-welcome-description {
+  margin-top: 8px;
+  font-size: 20px;
+  line-height: 1.45;
+}
+.home-welcome img {
+  width: 220px;
+  height: 155px;
+}
+.home-stats { gap: 0; }
+.home-stats-heading {
+  margin-bottom: 34px;
+  padding: 0 0 0 25px;
+}
+.home-section-title {
+  margin-top: 2px;
+  font-size: 48px;
+  line-height: 1.05;
+}
+.home-streak {
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-size: 20px;
+}
+.home-streak span { font-size: 22px; }
+.home-stat-grid {
+  gap: 80px;
+  margin: 0 0 0 10px;
+}
+.home-stat-card {
+  height: 190px;
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid #D7D2DF;
+  border-radius: 15px;
+}
+.home-stat-label { gap: 12px; color: #756A6A; font-size: 18px; }
+.home-stat-icon { width: 28px; height: 28px; flex: 0 0 auto; stroke: #9C9696; }
+.home-stat-count { margin: 12px 0; font-size: 56px; }
+.home-stat-description { color: #756A6A; font-size: 18px; }
+.home-recent {
+  gap: 0;
+  margin-top: 36px;
+}
+.home-recent-heading {
+  margin-bottom: 50px;
+  padding: 0 25px;
+}
+.home-resume-card {
+  height: 195px;
+  margin: 0 0 0 10px;
+  padding: 18px 28px 21px;
+  border-radius: 15px;
+}
+.home-resume-meta { font-size: 16px; }
+.home-resume-meta > span:first-child { padding: 7px 16px; font-size: 18px; }
+.home-resume-title { margin-top: 8px; font-size: 22px; }
+.home-resume-progress {
+  width: min(725px, 100%);
+  max-width: 725px;
+  height: 4px;
+  margin-top: 8px;
+  background-color: #B3B3B3;
+}
+.home-resume-action {
+  justify-content: center;
+  margin-top: 24px;
+}
+.home-resume-button {
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 18px;
+}
+
+@media (max-width: 1100px) {
+  .home-layout {
+    gap: 15px;
+    padding: 20px 0 0 15px;
+  }
+  .home-sidebar {
+    width: 233px;
+    height: min(655px, calc(100vh - 113px));
+    flex-basis: 233px;
+    padding: 10px 15px 20px;
+    border-radius: 10px;
+  }
+  .home-brand { gap: 9px; }
+  .home-brand-mark {
+    width: 35px;
+    height: 36px;
+    border-radius: 5px;
+  }
+  .home-brand-mark span { font-size: 25px; }
+  .home-brand-name { font-size: 17px; }
+  .home-nav { margin-top: 59px; }
+  .home-nav-link {
+    height: 38px;
+    gap: 12px;
+    padding: 0 10px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .home-nav-icon svg { width: 18px; height: 18px; }
+  .home-sidebar-actions { gap: 6px; }
+  .home-sidebar-action {
+    min-height: 48px;
+    gap: 10px;
+    padding: 0 8px;
+    font-size: 14px;
+  }
+  .home-sidebar-action-icon { width: 35px; height: 35px; }
+  .home-sidebar-action-icon svg { width: 20px; height: 20px; }
+  .home-main { margin-top: 2px; }
+  .home-topbar {
+    height: 55px;
+    flex-basis: 55px;
+    margin-bottom: 33px;
+    padding: 0 24px;
+    border-radius: 10px;
+  }
+  .home-search { width: 343px; max-width: 343px; }
+  .home-search-icon { left: 10px; }
+  .home-search-icon svg { width: 18px; height: 18px; }
+  .home-search-input {
+    height: 29px;
+    padding-left: 42px;
+    font-size: 12px;
+  }
+  .home-profile { gap: 5px; }
+  .home-avatar { width: 28px; height: 28px; font-size: 11px; }
+  .home-user-name { font-size: 12px; }
+  .home-welcome {
+    height: 144px;
+    min-height: 144px;
+    margin-bottom: 23px;
+    padding: 16px 17px;
+    border-radius: 10px;
+  }
+  .home-welcome-copy { min-width: 0; max-width: 520px; flex: 1 1 auto; }
+  .home-welcome-art { right: 17px; }
+  .home-eyebrow { font-size: 13px; }
+  .home-welcome-title { margin-top: 4px; font-size: 28px; line-height: 1.1; }
+  .home-welcome-description { margin-top: 5px; font-size: 13px; line-height: 1.4; }
+  .home-stats-heading {
+    margin-bottom: 36px;
+    padding: 0 0 0 17px;
+  }
+  .home-section-title { margin-top: 1px; font-size: 38px; }
+  .home-streak { gap: 4px; padding: 6px 12px; font-size: 14px; }
+  .home-streak span { font-size: 16px; }
+  .home-stat-grid { gap: 54px; margin: 0 0 0 10px; }
+  .home-stat-card {
+    height: 127px;
+    padding: 11px;
+    border-radius: 10px;
+  }
+  .home-stat-label { gap: 8px; font-size: 11px; }
+  .home-stat-icon { width: 26px; height: 26px; }
+  .home-stat-count { margin: 6px 0; font-size: 38px; }
+  .home-stat-description { font-size: 11px; }
+  .home-recent { margin-top: 24px; }
+  .home-recent-heading { margin-bottom: 34px; padding: 0 0 0 17px; }
+  .home-resume-card { height: 130px; margin: 0 0 0 10px; padding: 12px 19px 14px; border-radius: 10px; }
+  .home-resume-meta { font-size: 12px; }
+  .home-resume-meta > span:first-child { padding: 6px 12px; font-size: 12px; }
+  .home-resume-title { margin-top: 5px; font-size: 16px; }
+  .home-resume-progress {
+    width: min(483px, 100%);
+    max-width: 483px;
+    height: 3px;
+    margin-top: 5px;
+  }
+  .home-resume-action { margin-top: 16px; }
+  .home-resume-button { padding: 7px 16px; border-radius: 18px; font-size: 12px; }
 }
