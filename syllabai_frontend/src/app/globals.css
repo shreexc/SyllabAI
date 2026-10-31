@@ -358,6 +358,55 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
 .profile-list > div { display: flex; justify-content: space-between; gap: 15px; padding: 13px 0; border-top: 1px solid #eff0eb; font-size: 11px; }
 .profile-list dt { color: #909991; }
 .profile-list dd { margin: 0; color: #455148; font-weight: 600; text-align: right; }
+.account-profile-page { color: #20243a; font-family: var(--font-ui); }
+.account-profile-page .page-header { margin-bottom: 22px; }
+.account-profile-page .eyebrow { color: #806cf4; font-family: var(--font-ui); font-size: 20px; font-weight: 600; letter-spacing: .12em; }
+.account-section-heading > span { color: #756a6a; font-family: var(--font-ui); font-size: 11px; font-weight: 500; letter-spacing: .12em; }
+.account-progress-section .account-section-heading > span { font-size: 20px; }
+.account-profile-page .page-title { color: #17151e; font-family: var(--font-display); font-size: 64px; font-weight: 400; letter-spacing: 0; }
+.account-profile-page .page-description { color: #756a6a; font-family: var(--font-ui); font-size: 14px; }
+.account-profile-summary { position: relative; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 28px; margin-bottom: 30px; padding: 24px 26px; border: 1px solid #e5e0f5; border-radius: 15px; background: #fff; box-shadow: 0 8px 24px #30285b08; }
+.account-profile-identity { display: flex; align-items: center; gap: 20px; align-self: stretch; padding: 8px 24px 8px 0; border-right: 1px solid #c9c4c4; }
+.account-profile-page .profile-avatar.account-profile-avatar { position: static; width: 68px; height: 68px; flex: 0 0 auto; border-radius: 50%; color: #806cf4; background: #e6e1ff; font-family: var(--font-ui); font-size: 20px; font-weight: 600; }
+.account-profile-identity-copy { min-width: 0; align-self: center; padding-top: 0; }
+.account-profile-identity-copy h2 { margin: 0; color: #20243a; font-family: var(--font-ui); font-size: 24px; font-weight: 500; line-height: 1.35; }
+.account-profile-identity-copy p { overflow-wrap: anywhere; margin: 5px 0 10px; color: #756a6a; font-family: var(--font-ui); font-size: 16px; font-weight: 500; }
+.account-role-badge { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 999px; color: #2e6853; background: #e5f1e7; font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
+.account-role-badge--student { color: #6555c1; background: #e6e1ff; }
+.account-profile-details { position: relative; display: flex; align-items: center; min-width: 0; }
+.account-edit-button { position: absolute; top: -12px; right: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; border: 1px solid #806cf4; border-radius: 16px; color: #7665f5; background: #fff; box-shadow: 0 2px 3px #30285b30; cursor: pointer; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: .04em; }
+.account-edit-button:hover { background: #f8f6ff; }
+.account-details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; width: 100%; margin: 0; }
+.account-details-grid > div { min-width: 0; }
+.account-details-grid dt { color: #7665f5; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.account-details-grid dd { overflow-wrap: anywhere; margin: 4px 0 0; color: #20243a; font-family: var(--font-ui); font-size: 12px; font-weight: 600; }
+.account-profile-edit-form { display: flex; flex-direction: column; gap: 14px; }
+.account-profile-edit-form > p { margin: 0; color: #756a6a; font-size: 12px; }
+.account-edit-actions { display: flex; gap: 10px; }
+.account-save-button, .account-cancel-button { padding: 9px 14px; border: 1px solid #ded9eb; border-radius: 8px; cursor: pointer; font-family: var(--font-ui); font-size: 12px; font-weight: 500; }
+.account-save-button { border-color: #806cf4; color: #fff; background: #806cf4; }
+.account-save-button:disabled { opacity: .6; cursor: wait; }
+.account-cancel-button { color: #6555c1; background: #fff; }
+.account-progress-section { margin-bottom: 30px; }
+.account-section-heading { margin-bottom: 14px; }
+.account-section-heading h2 { margin: 5px 0 0; color: #17151e; font-family: var(--font-editorial); font-size: 26px; font-weight: 600; line-height: 1.2; }
+.account-progress-section .account-section-heading h2 { font-family: var(--font-display); font-size: 64px; font-weight: 400; }
+.account-progress-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.account-progress-card { position: relative; min-height: 145px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; border: 1px solid transparent; border-radius: 14px; color: #20243a; transition: transform .16s ease, box-shadow .16s ease; }
+.account-progress-card:hover { transform: translateY(-2px); box-shadow: 0 9px 22px #30285b12; }
+.account-progress-card > span:first-child { max-width: calc(100% - 25px); color: #4b465d; font-family: var(--font-ui); font-size: 13px; font-weight: 500; line-height: 1.45; }
+.account-progress-card strong { color: #20243a; font-family: var(--font-brand-numerals); font-size: 42px; font-weight: 400; line-height: 1; }
+.account-progress-card--quiz { border-color: #f1d8e9; background: #fff3fa; }
+.account-progress-card--flashcards { border-color: #dce5f6; background: #f1f5ff; }
+.account-progress-card--animation { border-color: #f1e1d1; background: #fff6ec; }
+.account-progress-arrow { position: absolute; top: 18px; right: 18px; color: #6555c1; font-size: 18px; }
+.account-security-card { margin-bottom: 38px; padding: 24px 26px; border: 1px solid #e5e0f5; border-radius: 15px; background: #fff; box-shadow: 0 8px 24px #30285b08; }
+.account-security-card .account-section-heading { margin-bottom: 7px; }
+.account-security-card .account-section-heading h2 { font-size: 23px; }
+.account-security-card > p { margin: 0; color: #756a6a; font-family: var(--font-ui); font-size: 13px; line-height: 1.6; }
+.account-security-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.account-delete-button { display: inline-flex; align-items: center; gap: 7px; padding: 9px 13px; border: 1px solid #dc3b3e; border-radius: 8px; color: #ca4a4a; background: #fff; cursor: pointer; font-family: var(--font-ui); font-size: 12px; font-weight: 500; }
+.account-delete-button:hover { border-color: #ca4a4a; color: #ca4a4a; background: #fff8f8; }
 
 /* Preparation history */
 .history-page { --accent: #33745f; --accent-pale: #e9f1e9; --accent-border: #dce9dd; width: min(1160px, calc(100% - 56px)); min-height: 100vh; margin: auto; padding-bottom: 25px; }
@@ -1927,6 +1976,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
 .font-editorial, .font-baskervville { font-family: var(--font-editorial) !important; }
 .font-brand-numerals, .font-dm-serif { font-family: var(--font-brand-numerals) !important; }
 .font-display, .font-ramaraja { font-family: var(--font-display) !important; }
+.sidebar-profile-label { color: #756a6a; font-family: var(--font-ui); font-size: 16px; font-weight: 400 !important; font-synthesis: none; line-height: 1.2; }
 
 /* Student home dashboard */
 .home-layout {
@@ -3343,4 +3393,24 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   }
   .home-resume-action { margin-top: 16px; }
   .home-resume-button { padding: 7px 16px; border-radius: 18px; font-size: 12px; }
+}
+
+@media (max-width: 850px) {
+  .account-profile-summary { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .account-profile-identity { align-items: center; padding: 0 0 20px; border-right: 0; border-bottom: 1px solid #e9e5f1; }
+  .account-profile-details { display: block; padding-top: 40px; }
+}
+
+@media (max-width: 600px) {
+  .account-profile-summary { padding: 22px 18px; }
+  .account-profile-page .page-title { font-size: 30px; }
+  .account-progress-section .account-section-heading h2 { font-size: 42px; }
+  .account-profile-identity { align-items: flex-start; gap: 12px; }
+  .account-profile-identity-copy { transform: none; }
+  .account-profile-page .profile-avatar.account-profile-avatar { width: 54px; height: 54px; font-size: 16px; }
+  .account-profile-identity-copy h2 { font-size: 24px; }
+  .account-details-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .account-progress-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .account-progress-card { min-height: 120px; }
+  .account-security-card { padding: 20px 18px; }
 }

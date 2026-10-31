@@ -5,9 +5,6 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatCard } from "@/components/shared/StatCard";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { useStudentAuth } from "@/hooks/useStudentAuth";
-import { useTeacherAuth } from "@/hooks/useTeacherAuth";
 import { api, ApiRequestError } from "@/lib/api";
 import { getDashboard } from "@/lib/learning-api";
 import type { User, UserRole } from "@/types/auth";
@@ -18,10 +15,6 @@ interface ProfilePageProps {
 }
 
 export function ProfilePage({ role }: ProfilePageProps) {
-  const { user: currentUser } = useCurrentUser();
-  const teacherAuth = useTeacherAuth();
-  const studentAuth = useStudentAuth();
-
   const [user, setUser] = useState<User | null>(null);
   const [stats, setStats] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -88,14 +81,6 @@ export function ProfilePage({ role }: ProfilePageProps) {
     }
   };
 
-  const handleSignOut = () => {
-    if (role === "teacher") {
-      void teacherAuth.signOut();
-    } else {
-      void studentAuth.signOut();
-    }
-  };
-
   if (loading) {
     return (
       <div className="profile-loading" style={{ padding: "40px 0" }}>
@@ -114,133 +99,103 @@ export function ProfilePage({ role }: ProfilePageProps) {
 
   if (!user) return null;
 
-  const initials = `${user.first_name.slice(0, 1)}${user.last_name.slice(0, 1)}`.toUpperCase();
+  const initials = `${user.first_name[0] || ""}${user.last_name[0] || ""}`.toUpperCase() ||
+    user.email.slice(0, 2).toUpperCase();
+  const memberSince = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(user.date_joined));
 
   return (
-    <div className="profile-container" style={{ maxWidth: "800px", margin: "0 auto" }}>
+    <div className={`profile-container account-profile-page${role === "student" ? " account-profile-page--student" : ""}`} style={{ width: "100%", maxWidth: role === "student" ? "1016px" : "800px", margin: "0 auto" }}>
       <PageHeader
         eyebrow="ACCOUNT OVERVIEW"
         title="Your Profile"
         description="View and update your personal information and check your activity statistics."
-        backHref={`/${role}/dashboard`}
-        backLabel="Dashboard"
       />
 
-      {/* Profile Card */}
-      <div className="profile-card" style={{ position: "relative", padding: "36px", border: "1px solid #e5ebe2", borderRadius: "14px", background: "#fffefa", marginBottom: "28px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "24px", marginBottom: "32px" }}>
-          <div className="profile-avatar" style={{ width: "64px", height: "64px", borderRadius: "50%", background: role === "teacher" ? "#e9f2e8" : "#f0edf5", color: role === "teacher" ? "#32735f" : "#62507d", display: "grid", placeItems: "center", fontSize: "24px", fontWeight: "bold", fontFamily: "var(--serif)" }}>
+      <section className="account-profile-summary" aria-label="Profile details">
+        <div className="account-profile-identity">
+          <div className="profile-avatar account-profile-avatar" aria-label={`Profile initials ${initials}`}>
             {initials}
           </div>
-          <div>
-            <h2 style={{ margin: 0, fontFamily: "var(--serif)", fontSize: "24px", fontWeight: 400 }}>
-              {user.first_name} {user.last_name}
-            </h2>
-            <span style={{ fontSize: "13px", color: "#77837b" }}>{user.email}</span>
-            <div style={{ marginTop: "6px" }}>
-              <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: "12px", background: role === "teacher" ? "#e5f1e7" : "#ede8f5", color: role === "teacher" ? "#2e6853" : "#62507d", fontSize: "10px", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase" }}>
-                {role === "teacher" ? "Educator Account" : "Learner Account"}
-              </span>
-            </div>
+          <div className="account-profile-identity-copy">
+            <h2>{user.first_name} {user.last_name}</h2>
+            <p>{user.email}</p>
+            <span className={`account-role-badge${role === "student" ? " account-role-badge--student" : ""}`}>
+              {role === "teacher" ? "Educator" : "Student"}
+            </span>
           </div>
+        </div>
+
+        <div className="account-profile-details">
           <button
             type="button"
             onClick={() => setIsEditing(!isEditing)}
-            style={{ marginLeft: "auto", padding: "8px 14px", borderRadius: "6px", border: "1px solid #dbe2d8", background: "white", fontSize: "12px", fontWeight: 600, color: "#36423b", cursor: "pointer" }}
+            className="account-edit-button"
           >
+            {!isEditing && (
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m15 5 4 4M4 20l4.2-.8L19 8.4 15.6 5 4.8 15.8 4 20Z" />
+              </svg>
+            )}
             {isEditing ? "Cancel" : "Edit Profile"}
           </button>
-        </div>
 
-        {/* Edit Form or Information Grid */}
-        {isEditing ? (
-          <form onSubmit={handleSave} style={{ display: "flex", flexDirection: "column", gap: "16px", borderTop: "1px solid #edf1ea", paddingTop: "24px" }}>
-            <div className="field-row">
-              <div className="form-field">
-                <label className="field-label" htmlFor="first_name">First Name</label>
-                <input
-                  id="first_name"
-                  type="text"
-                  className="field-input"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                />
+          {isEditing ? (
+            <form onSubmit={handleSave} className="account-profile-edit-form">
+              <div className="field-row">
+                <div className="form-field">
+                  <label className="field-label" htmlFor="first_name">First Name</label>
+                  <input id="first_name" type="text" className="field-input" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                </div>
+                <div className="form-field">
+                  <label className="field-label" htmlFor="last_name">Last Name</label>
+                  <input id="last_name" type="text" className="field-input" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+                </div>
               </div>
-              <div className="form-field">
-                <label className="field-label" htmlFor="last_name">Last Name</label>
-                <input
-                  id="last_name"
-                  type="text"
-                  className="field-input"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                />
+              <p>Email and role cannot be changed through profile settings.</p>
+              <div className="account-edit-actions">
+                <button type="submit" disabled={saving} className="account-save-button">
+                  {saving ? "Saving…" : "Save Changes"}
+                </button>
+                <button type="button" onClick={() => setIsEditing(false)} className="account-cancel-button">
+                  Cancel
+                </button>
               </div>
-            </div>
-            <div style={{ fontSize: "11px", color: "#8a948e" }}>
-              Email and role cannot be changed through profile settings.
-            </div>
-            <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-              <button
-                type="submit"
-                disabled={saving}
-                style={{ padding: "10px 18px", borderRadius: "6px", background: "#32735f", color: "white", border: 0, fontWeight: 600, fontSize: "12px", cursor: "pointer" }}
-              >
-                {saving ? "Saving…" : "Save Changes"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsEditing(false)}
-                style={{ padding: "10px 16px", borderRadius: "6px", background: "transparent", border: "1px solid #dbe2d8", color: "#515e56", fontSize: "12px", cursor: "pointer" }}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", borderTop: "1px solid #edf1ea", paddingTop: "24px" }}>
-            <div>
-              <span style={{ display: "block", fontSize: "10px", color: "#8c9790", textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 700 }}>First Name</span>
-              <strong style={{ display: "block", fontSize: "14px", color: "#28332d", marginTop: "4px" }}>{user.first_name}</strong>
-            </div>
-            <div>
-              <span style={{ display: "block", fontSize: "10px", color: "#8c9790", textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 700 }}>Last Name</span>
-              <strong style={{ display: "block", fontSize: "14px", color: "#28332d", marginTop: "4px" }}>{user.last_name}</strong>
-            </div>
-            <div>
-              <span style={{ display: "block", fontSize: "10px", color: "#8c9790", textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 700 }}>Email</span>
-              <span style={{ display: "block", fontSize: "14px", color: "#28332d", marginTop: "4px" }}>{user.email}</span>
-            </div>
-            <div>
-              <span style={{ display: "block", fontSize: "10px", color: "#8c9790", textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 700 }}>Account Role</span>
-              <span style={{ display: "block", fontSize: "14px", color: "#28332d", marginTop: "4px" }}>
-                {user.role === "teacher" ? "Educator" : "Student"} (Protected)
-              </span>
-            </div>
-            <div>
-              <span style={{ display: "block", fontSize: "10px", color: "#8c9790", textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 700 }}>Member Since</span>
-              <span style={{ display: "block", fontSize: "14px", color: "#28332d", marginTop: "4px" }}>
-                {new Date(user.date_joined).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
-              </span>
-            </div>
-            <div>
-              <span style={{ display: "block", fontSize: "10px", color: "#8c9790", textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 700 }}>Account Security</span>
-              <span style={{ display: "block", fontSize: "14px", color: "#28332d", marginTop: "4px" }}>
-                Protected with Secure JWT Cookies
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
+            </form>
+          ) : (
+            <dl className="account-details-grid">
+              <div><dt>First Name</dt><dd>{user.first_name}</dd></div>
+              <div><dt>Last Name</dt><dd>{user.last_name}</dd></div>
+              <div><dt>Email</dt><dd>{user.email}</dd></div>
+              <div><dt>Account Role</dt><dd>{user.role === "teacher" ? "Educator" : "Student"} (Protected)</dd></div>
+              <div><dt>Member Since</dt><dd>{memberSince}</dd></div>
+              <div><dt>Account Security</dt><dd>Protected with Secure JWT Cookies</dd></div>
+            </dl>
+          )}
+        </div>
+      </section>
 
       {/* Learning Statistics for Student / Creation Stats for Teacher */}
-      <div style={{ marginBottom: "28px" }}>
-        <h3 style={{ fontFamily: "var(--serif)", fontSize: "20px", fontWeight: 400, marginBottom: "16px" }}>
-          {role === "teacher" ? "Teaching Material Stats" : "Learning Statistics"}
-        </h3>
-        <div className="stat-cards-grid">
+      <section className="account-progress-section">
+        <div className="account-section-heading">
+          <span>{role === "teacher" ? "TEACHING STATISTICS" : "LEARNING STATISTICS"}</span>
+          <h2>{role === "teacher" ? "Teaching Material Stats" : "Your Progress"}</h2>
+        </div>
+        <div className={role === "student" ? "account-progress-grid" : "stat-cards-grid"}>
           {role === "teacher" ? (
             <>
               <StatCard label="Resources" value={stats?.resources_count ?? 0} icon="🗎" tone="mint" />
@@ -250,58 +205,55 @@ export function ProfilePage({ role }: ProfilePageProps) {
             </>
           ) : (
             <>
-              <StatCard label="Notes Studied" value={stats?.notes_count ?? 0} icon="▤" tone="mint" />
-              <StatCard label="Quizzes Ready" value={stats?.quizzes_count ?? 0} icon="✦" tone="peach" />
-              <StatCard label="Flashcards" value={stats?.flashcards_count ?? 0} icon="▱" tone="lavender" />
-              <StatCard label="Animations" value={stats?.animations_count ?? 0} icon="▷" tone="blue" />
+              <Link href="/student/quizzes" className="account-progress-card account-progress-card--quiz">
+                <span>Quizzes Completed</span><strong>0</strong><span className="account-progress-arrow" aria-hidden="true">↗</span>
+              </Link>
+              <Link href="/student/flashcards" className="account-progress-card account-progress-card--flashcards">
+                <span>Flashcards Created &amp; Studied</span><strong>0</strong><span className="account-progress-arrow" aria-hidden="true">↗</span>
+              </Link>
+              <Link href="/student/animations" className="account-progress-card account-progress-card--animation">
+                <span>Animations Watched</span><strong>0</strong><span className="account-progress-arrow" aria-hidden="true">↗</span>
+              </Link>
             </>
           )}
         </div>
-      </div>
+      </section>
 
       {/* Security Section */}
-      <div style={{ padding: "24px", border: "1px solid #e7ebe3", borderRadius: "12px", background: "#fffefa", marginBottom: "40px" }}>
-        <h3 style={{ margin: "0 0 8px", fontFamily: "var(--serif)", fontSize: "19px", fontWeight: 400 }}>Security & Session</h3>
-        <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#77827a" }}>
+      <section className="account-security-card">
+        <div className="account-section-heading">
+          <span>SECURITY AND SESSION</span>
+          <h2>Account Security</h2>
+        </div>
+        <p>
           You are currently signed in with an HttpOnly session cookie.
         </p>
-        {/* <button
-          type="button"
-          onClick={handleSignOut}
-          className="signout-button"
-          style={{ display: "inline-block", width: "auto", padding: "8px 16px", borderRadius: "6px", background: "#fff4f2", color: "#9c352a", fontWeight: 600, border: "1px solid #f2c7c2" }}
-        >
-          Sign out of account ↪
-        </button> */}
-
-
-        <button
-          type="button"
-          onClick={() => {
-            const confirmed = window.confirm(
-              "Are you sure you want to sign out of your account?"
-            );
-
-            if (confirmed) {
-              handleSignOut();
-            }
-          }}
-          className="signout-button"
-          style={{
-            display: "inline-block",
-            width: "auto",
-            padding: "8px 16px",
-            borderRadius: "6px",
-            background: "#fff4f2",
-            color: "#9c352a",
-            fontWeight: 600,
-            border: "1px solid #f2c7c2",
-          }}
-        >
-          Sign out of account ↪
-        </button>
-
-      </div>
+        <div className="account-security-actions">
+          <button
+            type="button"
+            className="account-delete-button"
+            onClick={() => toast.info("Account deletion is not available yet. Contact support for assistance.")}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M3 6h18" />
+              <path d="M8 6V4h8v2" />
+              <path d="m19 6-1 14H6L5 6" />
+              <path d="M10 11v5M14 11v5" />
+            </svg>
+            Delete Account
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

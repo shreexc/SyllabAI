@@ -228,7 +228,7 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
           <Link
             href={`/${role}/profile`}
             onClick={onClose}
-            className="flex items-center gap-3.5 rounded-[10px] px-2 py-1.5 text-[16px] font-medium text-[#756A6A] transition-colors hover:text-[#756A6A]"
+            className="flex items-center gap-3.5 rounded-[10px] px-2 py-1.5 text-[16px] font-normal text-[#756A6A] transition-colors hover:text-[#756A6A]"
           >
             <div
               className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full"
@@ -248,7 +248,7 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
                 <circle cx="12" cy="7" r="4" />
               </svg>
             </div>
-            <span className="font-ui text-[16px] font-medium text-[#756A6A]">My Profile</span>
+            <span className="sidebar-profile-label text-[#756A6A]">My Profile</span>
           </Link>
 
           <button
