@@ -1,33 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { getDashboard } from "@/lib/learning-api";
-import type { DashboardSummary } from "@/types/learning";
 
 export function StudentDashboard() {
   const { user } = useCurrentUser();
-  const [summary, setSummary] = useState<DashboardSummary | null>(null);
-
-  const fetchDashboardData = async () => {
-    try {
-      const data = await getDashboard("student");
-      setSummary(data.summary || {});
-    } catch {
-      // Graceful fallback to default stats if backend is offline
-    }
-  };
-
-  useEffect(() => {
-    void fetchDashboardData();
-  }, []);
-
   const firstName = user?.first_name || "Namrata";
-  const animationsCount = 4;
-  const quizzesCount = summary?.quizzes_count ?? 2;
-  const flashcardsCount = summary?.flashcards_count ?? 1;
+  const animationsCount = 0;
+  const quizzesCount = 0;
+  const flashcardsCount = 0;
 
   return (
     <div className="flex flex-col gap-6 font-ui">
@@ -43,7 +25,7 @@ export function StudentDashboard() {
           >
             YOUR STUDY SPACE
           </span>
-          <h1 className="mt-1.5 font-baskervville text-[38px] font-normal leading-[1.15] text-[#000000]">
+          <h1 className="mt-1.5 font-baskervville text-[38px] font-semibold leading-[1.15] text-[#000000]">
             Welcome back,<br />
             <span style={{ color: "#7665F5" }}>{firstName}.</span>
           </h1>
@@ -80,7 +62,7 @@ export function StudentDashboard() {
           {/* Learning Streak Badge */}
           <div className="flex items-center gap-1.5 rounded-full bg-white px-5 py-2 shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E5E0F5]/60">
             <span className="text-[14px] font-medium text-[#4B465D]">
-              Learning Streak : 5
+              Learning Streak : 0
             </span>
             <span className="text-[16px]" role="img" aria-label="streak flame">
               🔥
@@ -207,57 +189,16 @@ export function StudentDashboard() {
           </h2>
         </div>
 
-        {/* Newton's Second Law Card */}
-        <div className="flex flex-col rounded-[16px] bg-white p-7 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-          {/* Card Top Row */}
-          <div className="flex items-center justify-between">
-            <span className="rounded-full bg-[#E8F8E5] px-3.5 py-1 text-[13px] font-medium text-[#2E7D32]">
-              Animation
-            </span>
-            <span className="text-[13px] text-[#756A6A]">
-              2 mins remaining
-            </span>
-          </div>
-
-          {/* Subject Title */}
-          <h3 className="mt-3.5 font-baskervville text-[17px] font-semibold text-[#000000]">
-            Newton’s Second Law of Motion
+        <div
+          className="flex min-h-[180px] flex-col items-center justify-center rounded-[15px] border border-dashed border-[#B3B3B3] bg-white p-8 text-center"
+          role="status"
+        >
+          <h3 className="font-baskervville text-[22px] font-semibold text-[#30285B]">
+            No studies started yet
           </h3>
-
-          {/* Progress Bar */}
-          <div className="mt-2.5 h-[3.5px] w-full max-w-[620px] rounded-full bg-[#D1D5DB] overflow-hidden">
-            <div
-              className="h-full rounded-full"
-              style={{
-                width: "38%",
-                backgroundColor: "#7665F5",
-              }}
-            />
-          </div>
-
-          {/* Continue Watching Button */}
-          <div className="mt-5 flex justify-end">
-            <Link
-              href="/student/animations"
-              className="inline-flex items-center gap-2 rounded-[12px] px-5 py-2.5 text-[13.5px] font-medium text-[#4B465D] transition-colors hover:bg-[#E5E5E5]"
-              style={{ backgroundColor: "#EFEFEF" }}
-            >
-              <span>Continue Watching</span>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </Link>
-          </div>
+          <p className="mt-2 max-w-md text-[14px] leading-relaxed text-[#756A6A]">
+            Your recent learning sessions will appear here when you start studying.
+          </p>
         </div>
       </section>
     </div>

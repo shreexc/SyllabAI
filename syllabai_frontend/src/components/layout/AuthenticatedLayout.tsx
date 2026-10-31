@@ -84,7 +84,7 @@ export function AuthenticatedLayout({ role, children }: AuthenticatedLayoutProps
           isOpen={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
         />
-        <div className="flex flex-1 flex-col gap-6">
+        <div className={`flex flex-1 flex-col gap-6 ${role === "student" ? "mx-auto w-full max-w-[1016px]" : ""}`}>
           <Topbar
             role={role}
             onOpenMobileMenu={() => setMobileMenuOpen(true)}

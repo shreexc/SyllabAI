@@ -21,16 +21,14 @@ export function Topbar({ role, onOpenMobileMenu }: TopbarProps) {
     router.push(`/${role}/history?search=${encodeURIComponent(searchQuery.trim())}`);
   };
 
-  const userName = user?.first_name
-    ? `${user.first_name} ${user.last_name || ""}`.trim()
-    : "Namrata Lamichhane";
-
-  const initials =
-    user?.first_name && user?.last_name
-      ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
-      : user?.first_name
-      ? user.first_name[0].toUpperCase()
-      : "NL";
+  const userName = user
+    ? `${user.first_name} ${user.last_name}`.trim() || user.email
+    : "Student";
+  const initials = user
+    ? `${user.first_name[0] || ""}${user.last_name[0] || ""}`.toUpperCase() ||
+      user.email[0]?.toUpperCase() ||
+      "S"
+    : "S";
 
   return (
     <header className="flex h-[76px] items-center justify-between rounded-[15px] bg-white px-7 shadow-[0_2px_10px_rgba(0,0,0,0.02)] font-ui">

@@ -209,15 +209,15 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
                 onClick={onClose}
                 className={`flex h-11 items-center gap-3.5 rounded-[10px] px-3.5 text-[16px] font-medium transition-colors ${
                   isActive
-                    ? "text-[#1E1B2E] font-semibold"
-                    : "text-[#5A5565] hover:bg-[#F8F6FF] hover:text-[#7665F5]"
+                    ? "text-[#756A6A]"
+                    : "text-[#756A6A] hover:bg-[#F8F6FF] hover:text-[#756A6A]"
                 }`}
                 aria-current={isActive ? "page" : undefined}
               >
-                <span className={isActive ? "text-[#1E1B2E]" : "text-[#6B7280]"}>
+                <span className="text-[#756A6A]">
                   {link.icon}
                 </span>
-                <span>{link.name}</span>
+                <span className="text-[#756A6A]">{link.name}</span>
               </Link>
             );
           })}
@@ -228,7 +228,7 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
           <Link
             href={`/${role}/profile`}
             onClick={onClose}
-            className="flex items-center gap-3.5 rounded-[10px] px-2 py-1.5 text-[16px] font-medium text-[#5A5565] transition-colors hover:text-[#7665F5]"
+            className="flex items-center gap-3.5 rounded-[10px] px-2 py-1.5 text-[16px] font-medium text-[#756A6A] transition-colors hover:text-[#756A6A]"
           >
             <div
               className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full"
@@ -248,7 +248,7 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
                 <circle cx="12" cy="7" r="4" />
               </svg>
             </div>
-            <span>My Profile</span>
+            <span className="font-ui text-[16px] font-medium text-[#756A6A]">My Profile</span>
           </Link>
 
           <button
@@ -260,7 +260,7 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
                 onSignOut();
               }
             }}
-            className="flex items-center gap-3.5 rounded-[10px] px-2 py-1.5 text-left text-[16px] font-medium text-[#5A5565] transition-colors hover:text-[#7665F5]"
+            className="flex items-center gap-3.5 rounded-[10px] px-2 py-1.5 text-left text-[16px] font-medium text-[#756A6A] transition-colors hover:text-[#756A6A]"
           >
             <div
               className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full"
@@ -281,7 +281,7 @@ export function AppSidebar({ role, onSignOut, isOpen = false, onClose }: AppSide
                 <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
             </div>
-            <span>Sign out</span>
+            <span className="font-ui text-[16px] font-medium text-[#756A6A]">Sign out</span>
           </button>
         </div>
       </aside>

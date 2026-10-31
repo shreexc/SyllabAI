@@ -467,7 +467,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
 .resource-file-mark { width: fit-content; min-width: 32px; display: inline-flex; align-items: center; justify-content: center; padding: 5px 7px; border-radius: 4px; color: var(--accent); background: var(--accent-pale); font-size: 8px; font-weight: 700; letter-spacing: .04em; }
 .resource-result-type { color: #87928a; font-size: 9px; }
 .resource-result h3 { margin: 10px 0 5px; font-family: var(--serif); font-size: 17px; font-weight: 400; }
-.resource-result-description { display: -webkit-box; overflow: hidden; min-height: 31px; margin: 0; color: #7d8980; font-size: 9px; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.resource-result-description { display: -webkit-box; overflow: hidden; min-height: 31px; margin: 0; color: #7d8980; font-size: 9px; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
 .resource-preview { margin-top: 8px; color: #77837a; font-size: 9px; }
 .resource-preview summary { cursor: pointer; color: var(--accent); }
 .resource-preview p { line-height: 1.55; }
