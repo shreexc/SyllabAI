@@ -3,7 +3,7 @@ from pathlib import PurePath
 from django.conf import settings
 from rest_framework import serializers
 
-from .models import LearningResource, PreparationRequest
+from .models import Classroom, LearningResource, PreparationRequest
 from .services.scanning import scan_upload
 from .services.upload import validate_upload
 
@@ -139,6 +139,50 @@ class PreparationCreateSerializer(serializers.Serializer):
         if errors:
             raise serializers.ValidationError(errors)
         return options
+
+
+class ClassroomCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Classroom
+        fields = ("name", "subject")
+
+    def validate_name(self, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Enter a class name.")
+        return value
+
+    def validate_subject(self, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Enter a subject.")
+        return value
+
+
+class ClassroomSerializer(serializers.ModelSerializer):
+    teacher_name = serializers.SerializerMethodField()
+    student_count = serializers.IntegerField(source="students.count", read_only=True)
+
+    class Meta:
+        model = Classroom
+        fields = ("id", "name", "subject", "teacher_name", "student_count", "created_at")
+        read_only_fields = fields
+
+    def get_teacher_name(self, classroom: Classroom) -> str:
+        return f"{classroom.teacher.first_name} {classroom.teacher.last_name}".strip()
+
+
+class TeacherClassroomSerializer(ClassroomSerializer):
+    class Meta(ClassroomSerializer.Meta):
+        fields = (*ClassroomSerializer.Meta.fields, "class_code")
+        read_only_fields = fields
+
+
+class ClassroomJoinSerializer(serializers.Serializer):
+    class_code = serializers.CharField(min_length=6, max_length=6)
+
+    def validate_class_code(self, value: str) -> str:
+        return value.strip().upper()
 
 
 class PreparationRequestSerializer(serializers.ModelSerializer):

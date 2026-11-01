@@ -11,6 +11,9 @@ from .views import (
     SearchView,
     QuizAttemptView,
     FlashcardReviewView,
+    ClassroomJoinView,
+    StudentClassroomCollectionView,
+    TeacherClassroomCollectionView,
     StudentFlashcardReviewView,
     StudentPreparationCancelView,
     StudentPreparationCollectionView,
@@ -39,6 +42,9 @@ from .views import (
 app_name = "learning"
 
 urlpatterns = [
+    path("teacher/classrooms/", TeacherClassroomCollectionView.as_view(), name="teacher-classrooms"),
+    path("student/classrooms/", StudentClassroomCollectionView.as_view(), name="student-classrooms"),
+    path("student/classrooms/join/", ClassroomJoinView.as_view(), name="student-classroom-join"),
     path("search/", SearchView.as_view(), name="search"),
     path("resources/", ResourceCollectionView.as_view(), name="resources"),
     path("resources/upload/", UploadView.as_view(), name="upload"),

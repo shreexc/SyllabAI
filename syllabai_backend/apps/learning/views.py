@@ -16,10 +16,10 @@ from apps.accounts.csrf import enforce_csrf
 from apps.accounts.permissions import IsStudent, IsTeacher
 from apps.accounts.serializers import EmptySerializer
 from apps.common.utils import success_response
-from .models import LearningResource, PreparationRequest
+from .models import Classroom, LearningResource, PreparationRequest
 from .permissions import IsLearningUser
 from .selectors import get_owned_preparation, get_owned_resource
-from .serializers import LearningResourceSerializer, PreparationCreateSerializer, PreparationRequestSerializer, UploadSerializer
+from .serializers import ClassroomCreateSerializer, ClassroomJoinSerializer, ClassroomSerializer, LearningResourceSerializer, PreparationCreateSerializer, PreparationRequestSerializer, TeacherClassroomSerializer, UploadSerializer
 from .services.preparation import create_preparation
 from .services.search import search_resources
 from .tasks import enqueue_preparation, enqueue_resource
@@ -36,6 +36,66 @@ class LearningView(APIView):
         elif self.required_role == "student":
             permissions.append(IsStudent())
         return permissions
+
+
+class ClassroomCollectionView(LearningView):
+    def get(self, request):
+        classrooms = self.get_queryset(request)
+        return success_response(
+            "Classrooms loaded.",
+            {"results": ClassroomSerializer(classrooms, many=True).data},
+        )
+
+    def get_queryset(self, request):
+        if request.user.role == "teacher":
+            return Classroom.objects.filter(teacher=request.user).select_related("teacher").prefetch_related("students")
+        return Classroom.objects.filter(students=request.user).select_related("teacher").prefetch_related("students")
+
+
+class TeacherClassroomCollectionView(ClassroomCollectionView):
+    required_role = "teacher"
+
+    def get(self, request):
+        classrooms = self.get_queryset(request)
+        return success_response(
+            "Classrooms loaded.",
+            {"results": TeacherClassroomSerializer(classrooms, many=True).data},
+        )
+
+    def post(self, request):
+        enforce_csrf(request)
+        serializer = ClassroomCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        classroom = serializer.save(teacher=request.user)
+        return success_response(
+            "Class created.",
+            {"classroom": TeacherClassroomSerializer(classroom).data},
+            status.HTTP_201_CREATED,
+        )
+
+
+class StudentClassroomCollectionView(ClassroomCollectionView):
+    required_role = "student"
+
+
+class ClassroomJoinView(LearningView):
+    required_role = "student"
+
+    def post(self, request):
+        enforce_csrf(request)
+        serializer = ClassroomJoinSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        classroom = Classroom.objects.select_related("teacher").filter(
+            class_code=serializer.validated_data["class_code"],
+        ).first()
+        if classroom is None:
+            raise NotFound("No class was found with that code.")
+        classroom.students.add(request.user)
+        classroom = Classroom.objects.select_related("teacher").prefetch_related("students").get(pk=classroom.pk)
+        return success_response(
+            "You joined the class.",
+            {"classroom": ClassroomSerializer(classroom).data},
+        )
 
 
 class SearchView(LearningView):
@@ -360,4 +420,3 @@ class TeacherPreparationResultFileView(PreparationResultFileView):
 
 class StudentPreparationResultFileView(PreparationResultFileView):
     required_role = "student"
-

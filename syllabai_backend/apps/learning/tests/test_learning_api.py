@@ -353,3 +353,45 @@ class LearningApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertGreaterEqual(response.data["data"]["count"], 1)
 
+    def test_teacher_creates_class_and_student_joins_with_code(self):
+        created = self.authenticated_post(
+            "/api/v1/learning/teacher/classrooms/",
+            {"name": "Grade 8 Biology", "subject": "Biology"},
+        )
+        self.assertEqual(created.status_code, 201)
+        classroom = created.data["data"]["classroom"]
+        self.assertEqual(len(classroom["class_code"]), 6)
+        self.assertEqual(classroom["student_count"], 0)
+
+        self.client.force_authenticate(self.student)
+        joined = self.authenticated_post(
+            "/api/v1/learning/student/classrooms/join/",
+            {"class_code": classroom["class_code"].lower()},
+        )
+        self.assertEqual(joined.status_code, 200)
+        self.assertEqual(joined.data["data"]["classroom"]["id"], classroom["id"])
+        self.assertEqual(joined.data["data"]["classroom"]["student_count"], 1)
+        self.assertNotIn("class_code", joined.data["data"]["classroom"])
+
+        listed = self.client.get("/api/v1/learning/student/classrooms/")
+        self.assertEqual(listed.status_code, 200)
+        self.assertEqual(len(listed.data["data"]["results"]), 1)
+        self.assertEqual(listed.data["data"]["results"][0]["teacher_name"], "Terry Teacher")
+
+    def test_classroom_endpoints_enforce_roles_and_reject_unknown_codes(self):
+        response = self.authenticated_post(
+            "/api/v1/learning/teacher/classrooms/",
+            {"name": "Grade 8 Biology", "subject": "Biology"},
+        )
+        self.assertEqual(response.status_code, 201)
+
+        self.client.force_authenticate(self.student)
+        self.assertEqual(self.client.get("/api/v1/learning/teacher/classrooms/").status_code, 403)
+        invalid = self.authenticated_post(
+            "/api/v1/learning/student/classrooms/join/",
+            {"class_code": "XXXXXX"},
+        )
+        self.assertEqual(invalid.status_code, 404)
+
+        self.client.force_authenticate(self.teacher)
+        self.assertEqual(self.client.get("/api/v1/learning/student/classrooms/").status_code, 403)

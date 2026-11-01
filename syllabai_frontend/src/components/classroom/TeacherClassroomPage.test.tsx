@@ -1,23 +1,42 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TeacherClassroomPage } from "@/components/classroom/TeacherClassroomPage";
+import { createClassroom, listClassrooms } from "@/lib/classroom-api";
+
+vi.mock("@/lib/classroom-api", () => ({
+  createClassroom: vi.fn(),
+  joinClassroom: vi.fn(),
+  listClassrooms: vi.fn(),
+}));
+
+const classroom = {
+  id: "room-1",
+  name: "Grade 8 Biology",
+  subject: "Biology",
+  class_code: "B7K2LM",
+  teacher_name: "Terry Teacher",
+  student_count: 0,
+  created_at: "2026-01-01T00:00:00Z",
+};
 
 describe("TeacherClassroomPage", () => {
-  it("renders teacher classes and the create-class tile", () => {
+  beforeEach(() => {
+    vi.mocked(listClassrooms).mockResolvedValue([]);
+    vi.mocked(createClassroom).mockResolvedValue(classroom);
+  });
+
+  it("creates a class and displays the generated code for sharing", async () => {
     render(<TeacherClassroomPage />);
 
-    expect(screen.getByRole("heading", { name: "My Classes" })).toBeInTheDocument();
-    expect(
-      screen.getByText("Create and manage your classes, share learning materials, quizzes and assignments."),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Create a class" })).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText("Loading your classes...")).not.toBeInTheDocument());
 
-    for (const subject of ["Biology", "Physics", "Chemistry"]) {
-      expect(screen.getAllByRole("heading", { name: subject }).length).toBeGreaterThan(0);
-    }
+    fireEvent.change(screen.getByLabelText("Class name"), { target: { value: "Grade 8 Biology" } });
+    fireEvent.change(screen.getByLabelText("Subject"), { target: { value: "Biology" } });
+    fireEvent.click(screen.getByRole("button", { name: "Create class" }));
 
-    expect(screen.getAllByText("Students")).toHaveLength(3);
-    expect(screen.getAllByText("Learning materials")).toHaveLength(3);
-    expect(screen.getAllByText("Assignments & quizzes")).toHaveLength(3);
-    expect(screen.getByLabelText("Create New Class")).toBeInTheDocument();
+    await waitFor(() => expect(createClassroom).toHaveBeenCalledWith("Grade 8 Biology", "Biology"));
+    expect(await screen.findByText("B7K2LM")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Copy code" })).toBeInTheDocument();
   });
 });

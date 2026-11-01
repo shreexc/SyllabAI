@@ -1,8 +1,16 @@
 import uuid
+import secrets
 from pathlib import PurePath
 
 from django.conf import settings
 from django.db import models
+
+
+CLASS_CODE_CHARACTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+
+def generate_class_code() -> str:
+    return "".join(secrets.choice(CLASS_CODE_CHARACTERS) for _ in range(6))
 
 
 def private_resource_path(instance: "LearningResource", filename: str) -> str:
@@ -122,3 +130,26 @@ class PreparationRequest(models.Model):
     def __str__(self) -> str:
         return f"{self.get_preparation_type_display()} for {self.resource.title}"
 
+
+class Classroom(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    teacher = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="classrooms",
+    )
+    students = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="joined_classrooms",
+        blank=True,
+    )
+    name = models.CharField(max_length=100)
+    subject = models.CharField(max_length=100)
+    class_code = models.CharField(max_length=6, unique=True, default=generate_class_code)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return self.name
