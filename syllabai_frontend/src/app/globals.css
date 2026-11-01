@@ -449,6 +449,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
 .account-progress-card--quiz { border-color: #f1d8e9; background: #fff3fa; }
 .account-progress-card--flashcards { border-color: #dce5f6; background: #f1f5ff; }
 .account-progress-card--animation { border-color: #f1e1d1; background: #fff6ec; }
+.account-progress-card--resources { border-color: #c8e6d4; background: #f0faf5; }
 .account-progress-arrow { position: absolute; top: 18px; right: 18px; color: #6555c1; font-size: 18px; }
 .account-security-card { margin-bottom: 38px; padding: 24px 26px; border: 1px solid #e5e0f5; border-radius: 15px; background: #fff; box-shadow: 0 8px 24px #30285b08; }
 .account-security-card .account-section-heading { margin-bottom: 7px; }

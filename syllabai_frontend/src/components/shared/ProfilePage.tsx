@@ -4,7 +4,6 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { StatCard } from "@/components/shared/StatCard";
 import { api, ApiRequestError } from "@/lib/api";
 import { getDashboard } from "@/lib/learning-api";
 import type { User, UserRole } from "@/types/auth";
@@ -109,7 +108,7 @@ export function ProfilePage({ role }: ProfilePageProps) {
   }).format(new Date(user.date_joined));
 
   return (
-    <div className={`profile-container account-profile-page${role === "student" ? " account-profile-page--student" : ""}`} style={{ width: "100%", maxWidth: role === "student" ? "1016px" : "800px", margin: "0 auto" }}>
+    <div className="profile-container account-profile-page" style={{ width: "100%", maxWidth: "1016px", margin: "0 auto" }}>
       <PageHeader
         eyebrow="ACCOUNT OVERVIEW"
         title="Your Profile"
@@ -189,19 +188,35 @@ export function ProfilePage({ role }: ProfilePageProps) {
         </div>
       </section>
 
-      {/* Learning Statistics for Student / Creation Stats for Teacher */}
+      {/* Statistics section — same account-progress-card anatomy for both roles */}
       <section className="account-progress-section">
         <div className="account-section-heading">
           <span>{role === "teacher" ? "TEACHING STATISTICS" : "LEARNING STATISTICS"}</span>
-          <h2>{role === "teacher" ? "Teaching Material Stats" : "Your Progress"}</h2>
+          <h2>{role === "teacher" ? "Your Teaching Stats" : "Your Progress"}</h2>
         </div>
-        <div className={role === "student" ? "account-progress-grid" : "stat-cards-grid"}>
+        <div className="account-progress-grid" style={role === "teacher" ? { gridTemplateColumns: "repeat(4, minmax(0, 1fr))" } : {}}>
           {role === "teacher" ? (
             <>
-              <StatCard label="Resources" value={stats?.resources_count ?? 0} icon="🗎" tone="mint" />
-              <StatCard label="Quizzes Created" value={stats?.quizzes_count ?? 0} icon="✦" tone="peach" />
-              <StatCard label="Flashcard Decks" value={stats?.flashcards_count ?? 0} icon="▱" tone="lavender" />
-              <StatCard label="Short Notes" value={stats?.notes_count ?? 0} icon="▤" tone="blue" />
+              <Link href="/teacher/animations" className="account-progress-card account-progress-card--animation">
+                <span>Animations Created</span>
+                <strong>{stats?.animations_count ?? 0}</strong>
+                <span className="account-progress-arrow" aria-hidden="true">↗</span>
+              </Link>
+              <Link href="/teacher/quizzes" className="account-progress-card account-progress-card--quiz">
+                <span>Quizzes Created</span>
+                <strong>{stats?.quizzes_count ?? 0}</strong>
+                <span className="account-progress-arrow" aria-hidden="true">↗</span>
+              </Link>
+              <Link href="/teacher/prepare" className="account-progress-card account-progress-card--resources">
+                <span>Teaching Resources</span>
+                <strong>{stats?.resources_count ?? 0}</strong>
+                <span className="account-progress-arrow" aria-hidden="true">↗</span>
+              </Link>
+              <Link href="/teacher/flashcards" className="account-progress-card account-progress-card--flashcards">
+                <span>Flashcard Decks</span>
+                <strong>{stats?.flashcards_count ?? 0}</strong>
+                <span className="account-progress-arrow" aria-hidden="true">↗</span>
+              </Link>
             </>
           ) : (
             <>
