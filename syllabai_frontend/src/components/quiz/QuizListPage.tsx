@@ -74,20 +74,14 @@ export function QuizListPage({ role }: QuizListPageProps) {
   }, [quizzes, searchQuery, difficultyFilter]);
 
   return (
-    <div className={`quiz-list-page${role === "student" ? " quiz-list-page--student" : ""}`}>
+    <div className={`quiz-list-page${role === "student" ? " quiz-list-page--student" : " quiz-list-page--teacher"}`}>
       <PageHeader
         eyebrow="PRACTICE & ASSESSMENT"
         title={role === "teacher" ? "Teaching Quizzes" : "Practice Quizzes"}
-        description={
-          role === "student"
-            ? "Source grounded comprehension questions with instant feedback and explanations."
-            : "Source-grounded comprehension questions with instant feedback and explanations."
-        }
-        actionHref={role === "teacher" ? `/${role}/prepare?type=quiz` : undefined}
-        actionLabel={role === "teacher" ? "＋ Create Quiz" : undefined}
+        description="Source grounded comprehension questions with instant feedback and explanations."
       />
 
-      {!loading && !error && (role === "teacher" || quizzes.length > 0) && (
+      {!loading && !error && role === "student" && quizzes.length > 0 && (
         <div className="quiz-filter-toolbar">
           <input
             type="search"
@@ -111,40 +105,35 @@ export function QuizListPage({ role }: QuizListPageProps) {
         </div>
       )}
 
-      {loading &&
-        (role === "student" ? (
-          <div className="quiz-loading-state">
-            <LoadingSkeleton type="cards" count={3} />
-          </div>
-        ) : (
+      {loading && (
+        <div className="quiz-loading-state">
           <LoadingSkeleton type="cards" count={3} />
-        ))}
+        </div>
+      )}
 
       {error && <ErrorState message={error} onRetry={loadQuizzes} />}
 
       {!loading && !error && filteredQuizzes.length === 0 && (
         <EmptyState
-          className={role === "student" ? "quiz-empty-state" : undefined}
+          className={role === "student" ? "quiz-empty-state" : "quiz-empty-state"}
           icon={
-            role === "student" ? (
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 42 42"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="7" y="5" width="27" height="32" rx="3" />
-                <rect x="11" y="11" width="4" height="4" rx="0.5" />
-                <rect x="11" y="19" width="4" height="4" rx="0.5" />
-                <rect x="11" y="27" width="4" height="4" rx="0.5" />
-                <path d="M19 13h10M19 21h10M19 29h7" />
-                <path d="m36 11 2 2-1 19-2 5-2-5 1-19 2-2Z" />
-              </svg>
-            ) : "✦"
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 42 42"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="7" y="5" width="27" height="32" rx="3" />
+              <rect x="11" y="11" width="4" height="4" rx="0.5" />
+              <rect x="11" y="19" width="4" height="4" rx="0.5" />
+              <rect x="11" y="27" width="4" height="4" rx="0.5" />
+              <path d="M19 13h10M19 21h10M19 29h7" />
+              <path d="m36 11 2 2-1 19-2 5-2-5 1-19 2-2Z" />
+            </svg>
           }
           title={searchQuery || difficultyFilter !== "all" ? "No matching quizzes found" : "No quizzes created yet"}
           description={
