@@ -40,7 +40,7 @@ const suggestions = [
   },
 ] as const;
 
-export function StudentChatPage() {
+function ChatPage() {
   const [prompt, setPrompt] = useState("");
   const [error, setError] = useState("");
   const promptInput = useRef<HTMLInputElement>(null);
@@ -59,20 +59,20 @@ export function StudentChatPage() {
   };
 
   return (
-    <div className="student-chat-page">
+    <div className="chat-page">
       <PageHeader
         eyebrow="PRACTICE & ASSESSMENT"
         title="Chat with SyllabAI Assistant"
         description="Ask questions about your syllabus and request instant summaries."
       />
 
-      <section className="student-chat-workspace" aria-label="Chat with SyllabAI Assistant">
-        <div className="student-chat-conversation" aria-live="polite">
+      <section className="chat-workspace" aria-label="Chat with SyllabAI Assistant">
+        <div className="chat-conversation" aria-live="polite">
           <p>Where should we begin?</p>
         </div>
 
-        <form className="student-chat-composer" onSubmit={handleSubmit}>
-          <span className="student-chat-add-icon" aria-hidden="true">+</span>
+        <form className="chat-composer" onSubmit={handleSubmit}>
+          <span className="chat-add-icon" aria-hidden="true">+</span>
           <input
             ref={promptInput}
             aria-label="Ask SyllabAI Assistant"
@@ -85,7 +85,7 @@ export function StudentChatPage() {
           />
           <button
             type="submit"
-            className="student-chat-send"
+            className="chat-send"
             aria-label="Send message"
             disabled={!prompt.trim()}
           >
@@ -106,17 +106,17 @@ export function StudentChatPage() {
           </button>
         </form>
 
-        {error && <p className="student-chat-error" role="alert">{error}</p>}
+        {error && <p className="chat-error" role="alert">{error}</p>}
 
-        <div className="student-chat-suggestions" aria-label="Suggested prompts">
+        <div className="chat-suggestions" aria-label="Suggested prompts">
           {suggestions.map((suggestion) => (
             <button
-              className="student-chat-suggestion"
+              className="chat-suggestion"
               key={suggestion.label}
               type="button"
               onClick={() => chooseSuggestion(suggestion.prompt)}
             >
-              <span className={`student-chat-suggestion-icon student-chat-suggestion-icon--${suggestion.tone}`}>
+              <span className={`chat-suggestion-icon chat-suggestion-icon--${suggestion.tone}`}>
                 <svg
                   width="14"
                   height="14"
@@ -138,4 +138,12 @@ export function StudentChatPage() {
       </section>
     </div>
   );
+}
+
+export function StudentChatPage() {
+  return <ChatPage />;
+}
+
+export function TeacherChatPage() {
+  return <ChatPage />;
 }
