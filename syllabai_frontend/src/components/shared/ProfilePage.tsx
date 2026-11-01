@@ -112,7 +112,7 @@ export function ProfilePage({ role }: ProfilePageProps) {
       <PageHeader
         eyebrow="ACCOUNT OVERVIEW"
         title="Your Profile"
-        description="View and update your personal information and check your activity statistics."
+        description="View and update your personal information, and check your activity statistics."
       />
 
       <section className="account-profile-summary" aria-label="Profile details">
@@ -182,60 +182,86 @@ export function ProfilePage({ role }: ProfilePageProps) {
               <div><dt>Email</dt><dd>{user.email}</dd></div>
               <div><dt>Account Role</dt><dd>{user.role === "teacher" ? "Educator" : "Student"} (Protected)</dd></div>
               <div><dt>Member Since</dt><dd>{memberSince}</dd></div>
-              <div><dt>Account Security</dt><dd>Protected with Secure JWT Cookies</dd></div>
+              <div><dt>Account Security</dt><dd>{user.role === "teacher" ? "Educator" : "Student"} (Protected)</dd></div>
             </dl>
           )}
         </div>
       </section>
 
-      {/* Statistics section — same account-progress-card anatomy for both roles */}
       <section className="account-progress-section">
         <div className="account-section-heading">
-          <span>{role === "teacher" ? "TEACHING STATISTICS" : "LEARNING STATISTICS"}</span>
-          <h2>{role === "teacher" ? "Your Teaching Stats" : "Your Progress"}</h2>
+          <span>LEARNING STATISTICS</span>
+          <h2>Your Progress</h2>
         </div>
-        <div className="account-progress-grid" style={role === "teacher" ? { gridTemplateColumns: "repeat(4, minmax(0, 1fr))" } : {}}>
-          {role === "teacher" ? (
-            <>
-              <Link href="/teacher/animations" className="account-progress-card account-progress-card--animation">
-                <span>Animations Created</span>
-                <strong>{stats?.animations_count ?? 0}</strong>
-                <span className="account-progress-arrow" aria-hidden="true">↗</span>
-              </Link>
-              <Link href="/teacher/quizzes" className="account-progress-card account-progress-card--quiz">
-                <span>Quizzes Created</span>
-                <strong>{stats?.quizzes_count ?? 0}</strong>
-                <span className="account-progress-arrow" aria-hidden="true">↗</span>
-              </Link>
-              <Link href="/teacher/prepare" className="account-progress-card account-progress-card--resources">
-                <span>Teaching Resources</span>
-                <strong>{stats?.resources_count ?? 0}</strong>
-                <span className="account-progress-arrow" aria-hidden="true">↗</span>
-              </Link>
-              <Link href="/teacher/flashcards" className="account-progress-card account-progress-card--flashcards">
-                <span>Flashcard Decks</span>
-                <strong>{stats?.flashcards_count ?? 0}</strong>
-                <span className="account-progress-arrow" aria-hidden="true">↗</span>
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link href="/student/quizzes" className="account-progress-card account-progress-card--quiz">
-                <span>Quizzes Completed</span><strong>0</strong><span className="account-progress-arrow" aria-hidden="true">↗</span>
-              </Link>
-              <Link href="/student/flashcards" className="account-progress-card account-progress-card--flashcards">
-                <span>Flashcards Created &amp; Studied</span><strong>0</strong><span className="account-progress-arrow" aria-hidden="true">↗</span>
-              </Link>
-              <Link href="/student/animations" className="account-progress-card account-progress-card--animation">
-                <span>Animations Watched</span><strong>0</strong><span className="account-progress-arrow" aria-hidden="true">↗</span>
-              </Link>
-            </>
-          )}
+        <div className="account-progress-grid">
+          <Link href={`/${role}/quizzes`} className="account-progress-card account-progress-card--quiz">
+            <span className="account-progress-label">
+              <span className="account-progress-icon account-progress-icon--quiz" aria-hidden="true">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="2" width="10" height="12" rx="1.5" />
+                  <path d="M5.5 5h5M5.5 8h5M5.5 11h3" />
+                </svg>
+              </span>
+              QUIZZES
+            </span>
+            <strong>{stats?.quizzes_count ?? 0}</strong>
+            <span className="account-progress-description">
+              {role === "teacher" ? "Quizzes created" : "Practice quizzes completed."}
+            </span>
+            <span className="account-progress-arrow" aria-hidden="true">→</span>
+          </Link>
+          <Link href={`/${role}/flashcards`} className="account-progress-card account-progress-card--flashcards">
+            <span className="account-progress-label">
+              <span className="account-progress-icon account-progress-icon--flashcards" aria-hidden="true">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 3.5h8v9H5zM3 5.5v8h8" />
+                  <path d="M7 6h4M7 8.5h3" />
+                </svg>
+              </span>
+              FLASHCARDS
+            </span>
+            <strong>{stats?.flashcards_count ?? 0}</strong>
+            <span className="account-progress-description">
+              {role === "teacher" ? "Flashcard decks created" : "Flashcards created & studied"}
+            </span>
+            <span className="account-progress-arrow" aria-hidden="true">→</span>
+          </Link>
+          <Link href={`/${role}/animations`} className="account-progress-card account-progress-card--animation">
+            <span className="account-progress-label">
+              <span className="account-progress-icon account-progress-icon--animation" aria-hidden="true">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="8" cy="8" r="6" />
+                  <path d="m7 5.5 3.5 2.5L7 10.5z" fill="currentColor" />
+                </svg>
+              </span>
+              ANIMATION
+            </span>
+            <strong>{stats?.animations_count ?? 0}</strong>
+            <span className="account-progress-description">
+              {role === "teacher" ? "Animations created" : "Learning animations watched"}
+            </span>
+            <span className="account-progress-arrow" aria-hidden="true">→</span>
+          </Link>
         </div>
       </section>
 
       {/* Security Section */}
       <section className="account-security-card">
+        <span className="account-security-icon" aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 3 19 6v5c0 4.5-2.9 7.7-7 10-4.1-2.3-7-5.5-7-10V6l7-3Z" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+        </span>
         <div className="account-section-heading">
           <span>SECURITY AND SESSION</span>
           <h2>Account Security</h2>
