@@ -2843,16 +2843,16 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
     }
   }
 
-/* Student flashcard deck list */
-.flashcard-list-page--student .page-header {
+/* Flashcard deck list visual style */
+.flashcard-list-page--visual .page-header {
   margin-bottom: 30px;
 }
 
-.flashcard-list-page--student .page-header-row {
+.flashcard-list-page--visual .page-header-row {
   align-items: flex-start;
 }
 
-.flashcard-list-page--student .eyebrow {
+.flashcard-list-page--visual .eyebrow {
   color: #7665f5;
   font-size: 14px;
   font-weight: 600;
@@ -2860,7 +2860,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   line-height: 17px;
 }
 
-.flashcard-list-page--student .page-title {
+.flashcard-list-page--visual .page-title {
   margin: 14px 0 24px;
   color: #000;
   font-family: var(--font-editorial);
@@ -2870,7 +2870,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   line-height: 1.15;
 }
 
-.flashcard-list-page--student .page-description {
+.flashcard-list-page--visual .page-description {
   max-width: 610px;
   color: #756a6a;
   font-size: 14px;
@@ -2878,7 +2878,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   line-height: 1.25;
 }
 
-.flashcard-list-page--student .flashcard-empty-state {
+.flashcard-list-page--visual .flashcard-empty-state {
   position: relative;
   isolation: isolate;
   display: flex;
@@ -2897,7 +2897,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   text-align: center;
 }
 
-.flashcard-list-page--student .flashcard-empty-state::before {
+.flashcard-list-page--visual .flashcard-empty-state::before {
   position: absolute;
   z-index: -1;
   inset: 22px 27px;
@@ -2907,7 +2907,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   pointer-events: none;
 }
 
-.flashcard-list-page--student .flashcard-empty-state .empty-state-icon {
+.flashcard-list-page--visual .flashcard-empty-state .empty-state-icon {
   display: grid;
   width: 180px;
   height: 120px;
@@ -2919,13 +2919,13 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   color: inherit;
 }
 
-.flashcard-list-page--student .flashcard-empty-state .empty-state-icon svg {
+.flashcard-list-page--visual .flashcard-empty-state .empty-state-icon svg {
   display: block;
   width: 180px;
   height: 120px;
 }
 
-.flashcard-list-page--student .flashcard-empty-state .empty-state-title {
+.flashcard-list-page--visual .flashcard-empty-state .empty-state-title {
   margin: 0 0 16px;
   color: #330bbd;
   font-family: var(--font-editorial);
@@ -2934,7 +2934,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   line-height: 1.2;
 }
 
-.flashcard-list-page--student .flashcard-empty-state .empty-state-description {
+.flashcard-list-page--visual .flashcard-empty-state .empty-state-description {
   max-width: 500px;
   margin: 0 auto 16px;
   color: #756a6a;
@@ -2942,7 +2942,7 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   line-height: 1.2;
 }
 
-.flashcard-list-page--student .flashcard-empty-state .empty-state-action {
+.flashcard-list-page--visual .flashcard-empty-state .empty-state-action {
   position: relative;
   display: inline-flex;
   width: min(240px, 100%);
@@ -2959,37 +2959,37 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   font-weight: 500;
 }
 
-.flashcard-list-page--student .flashcard-empty-state .empty-state-action span {
+.flashcard-list-page--visual .flashcard-empty-state .empty-state-action span {
   position: absolute;
   right: 16px;
   font-size: 20px;
   line-height: 1;
 }
 
-.flashcard-list-page--student .flashcard-list-loading-state {
+.flashcard-list-page--visual .flashcard-list-loading-state {
   min-height: 392px;
 }
 
-.flashcard-list-page--student .flashcard-filter-toolbar {
+.flashcard-list-page--visual .flashcard-filter-toolbar {
   width: min(380px, 100%);
   margin-bottom: 24px;
 }
 
 @media (max-width: 767px) {
-  .flashcard-list-page--student .page-title {
+  .flashcard-list-page--visual .page-title {
     font-size: 32px;
   }
 
-  .flashcard-list-page--student .flashcard-empty-state {
+  .flashcard-list-page--visual .flashcard-empty-state {
     min-height: 392px;
     padding: 18px 24px;
   }
 
-  .flashcard-list-page--student .flashcard-empty-state::before {
+  .flashcard-list-page--visual .flashcard-empty-state::before {
     inset: 22px 27px;
   }
 
-  .flashcard-list-page--student .flashcard-empty-state .empty-state-title {
+  .flashcard-list-page--visual .flashcard-empty-state .empty-state-title {
     font-size: 22px;
   }
 }

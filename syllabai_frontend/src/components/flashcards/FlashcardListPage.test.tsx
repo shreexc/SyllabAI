@@ -81,10 +81,25 @@ describe("FlashcardListPage", () => {
     expect(screen.getByText("No matching flashcard decks found")).toBeInTheDocument();
   });
 
-  it("preserves teacher create and search controls", async () => {
+  it("renders the teacher empty state without empty-list controls", async () => {
     render(<FlashcardListPage role="teacher" />);
 
     expect(await screen.findByText("No flashcard decks prepared yet")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Teaching Flashcards" })).toBeInTheDocument();
+    expect(screen.queryByRole("searchbox", { name: "Search flashcards" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Create Flashcards/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Prepare your first deck/ })).toHaveAttribute(
+      "href",
+      "/teacher/prepare?type=flashcard",
+    );
+    expect(screen.getByRole("status").querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("preserves teacher create and search controls when decks exist", async () => {
+    vi.mocked(listPreparations).mockResolvedValue([savedDeck]);
+    render(<FlashcardListPage role="teacher" />);
+
+    expect(await screen.findByRole("heading", { name: "Cell structures" })).toBeInTheDocument();
     expect(screen.getByRole("searchbox", { name: "Search flashcards" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Create Flashcards/ })).toHaveAttribute(
       "href",
