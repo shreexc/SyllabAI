@@ -1,12 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
-import { StatCard } from "@/components/shared/StatCard";
-import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getDashboard } from "@/lib/learning-api";
 import type { DashboardSummary } from "@/types/learning";
@@ -34,206 +32,266 @@ export function TeacherDashboard() {
     void fetchDashboardData();
   }, []);
 
-  if (loading) {
-    return <LoadingSkeleton type="dashboard" />;
-  }
+  if (loading) return <LoadingSkeleton type="dashboard" />;
+  if (error)   return <ErrorState message={error} onRetry={fetchDashboardData} />;
 
-  if (error) {
-    return <ErrorState message={error} onRetry={fetchDashboardData} />;
-  }
-
-  const resourcesCount = summary?.resources_count ?? 0;
-  const quizzesCount = summary?.quizzes_count ?? 0;
+  const animationsCount = summary?.animations_count ?? 0;
+  const quizzesCount    = summary?.quizzes_count    ?? 0;
+  const resourcesCount  = summary?.resources_count  ?? 0;
   const flashcardsCount = summary?.flashcards_count ?? 0;
-  const notesCount = summary?.notes_count ?? 0;
-  const recentResources = summary?.recent_resources ?? [];
-  const recentPreparations = summary?.recent_preparations ?? [];
 
-  const isEmpty = resourcesCount === 0 && recentPreparations.length === 0;
+  const firstName = user?.first_name || "Teacher";
 
   return (
-    <div className="teacher-dashboard">
-      <section className="welcome-banner" aria-label="Welcome">
+    /* Outer wrapper mirrors StudentDashboard: flex-col gap-6 font-ui */
+    <div className="flex flex-col gap-6 font-ui">
+
+      {/* ── Welcome Banner ─────────────────────────────────────────────── */}
+      <section
+        className="flex items-center justify-between rounded-[16px] bg-white px-9 py-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
+        aria-label="Welcome teaching banner"
+      >
+        <div className="max-w-[580px]">
+          {/* Eyebrow */}
+          <span
+            className="block text-[13px] font-semibold uppercase tracking-[0.1em]"
+            style={{ color: "#7665F5" }}
+          >
+            YOUR STUDY SPACE
+          </span>
+
+          {/* Heading — Baskervville semibold per Figma */}
+          <h1 className="mt-1.5 font-baskervville text-[38px] font-semibold leading-[1.15] text-[#000000]">
+            Welcome back,<br />
+            <span style={{ color: "#7665F5" }}>{firstName}.</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="mt-2 text-[15px] leading-relaxed text-[#756A6A]">
+            Prepare smarter study tools for your students from any document or syllabus.
+          </p>
+        </div>
+
+        {/* Banner illustration */}
+        <div className="flex flex-shrink-0 items-center justify-center">
+          <Image
+            src="/images/study-banner-art-user.png"
+            alt="Teaching workspace illustration"
+            width={210}
+            height={155}
+            priority
+            className="object-contain"
+          />
+        </div>
+      </section>
+
+      {/* ── Teaching Overview ──────────────────────────────────────────── */}
+      <section className="flex flex-col gap-4" aria-label="Teaching overview statistics">
+        {/* Section heading */}
         <div>
-          <span className="banner-kicker">EDUCATOR DASHBOARD</span>
-          <h2>
-            Good to have you here,<br />
-            <em>{user?.first_name || "Teacher"}.</em>
+          <span className="block text-[13px] font-semibold uppercase tracking-[0.08em] text-[#756A6A]">
+            WORKSPACE SUMMARY
+          </span>
+          <h2
+            className="mt-0.5 leading-tight text-[#000000]"
+            style={{
+              fontFamily: "'Ramaraja', serif",
+              fontSize: "64px",
+              fontWeight: 400,
+              lineHeight: 1,
+            }}
+          >
+            Teaching Overview
           </h2>
-          <p>Prepare smarter study tools for your students from any document or syllabus.</p>
-          <div className="welcome-banner-actions" style={{ marginTop: "16px" }}>
-            <Link href="/teacher/prepare" className="hero-button" style={{ padding: "10px 16px", fontSize: "12px" }}>
-              ✧ Prepare Material <span>↗</span>
-            </Link>
-          </div>
         </div>
-        <div className="banner-art" aria-hidden="true">
-          <span className="banner-spark">✳</span>
-          <span className="banner-orbit" />
-          <span className="banner-dot">✦</span>
-        </div>
-      </section>
 
-      {/* Overview Stat Cards */}
-      <section className="dashboard-section" aria-label="Overview statistics" style={{ marginTop: "28px" }}>
-        <div className="section-heading" style={{ marginTop: 0 }}>
-          <div>
-            <span className="eyebrow">WORKSPACE SUMMARY</span>
-            <h2>Teaching overview</h2>
-          </div>
-        </div>
-        <div className="stat-cards-grid">
-          <StatCard
-            label="Resources"
-            value={resourcesCount}
-            icon="🗎"
-            tone="mint"
-            caption="Uploaded teaching materials"
-          />
-          <StatCard
-            label="Quizzes"
-            value={quizzesCount}
-            icon="✦"
-            tone="peach"
-            caption="Ready practice quizzes"
-          />
-          <StatCard
-            label="Flashcard Decks"
-            value={flashcardsCount}
-            icon="▱"
-            tone="lavender"
-            caption="Active recall sets"
-          />
-          <StatCard
-            label="Short Notes"
-            value={notesCount}
-            icon="▤"
-            tone="blue"
-            caption="Extracted reading summaries"
-          />
-        </div>
-      </section>
+        {/* 2×2 Stat card grid — same card anatomy as StudentDashboard */}
+        <div className="grid grid-cols-2 gap-5">
 
-      {/* Quick Actions */}
-      <section className="dashboard-section" aria-label="Quick actions" style={{ marginTop: "28px" }}>
-        <div className="section-heading" style={{ marginTop: 0 }}>
-          <div>
-            <span className="eyebrow">CREATION SHORTCUTS</span>
-            <h2>Quick actions</h2>
-          </div>
-        </div>
-        <div className="tool-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
-          <Link href="/teacher/prepare" className="tool-card">
-            <span className="tool-icon tool-icon--mint">✧</span>
-            <h3>Prepare Material</h3>
-            <p>Upload a document and select what to generate.</p>
-            <span className="tool-link">Start workspace <span>↗</span></span>
-          </Link>
-          <Link href="/teacher/prepare?type=quiz" className="tool-card">
-            <span className="tool-icon tool-icon--peach">✦</span>
-            <h3>Create Quiz</h3>
-            <p>Generate comprehension questions from text.</p>
-            <span className="tool-link">Create quiz <span>↗</span></span>
-          </Link>
-          <Link href="/teacher/prepare?type=flashcard" className="tool-card">
-            <span className="tool-icon tool-icon--lavender">▱</span>
-            <h3>Create Flashcards</h3>
-            <p>Extract prompt and reveal memory cards.</p>
-            <span className="tool-link">Create deck <span>↗</span></span>
-          </Link>
-          <Link href="/teacher/prepare?type=short_note" className="tool-card">
-            <span className="tool-icon tool-icon--blue">▤</span>
-            <h3>Generate Notes</h3>
-            <p>Summarize lengthy material into bullet points.</p>
-            <span className="tool-link">Create notes <span>↗</span></span>
-          </Link>
-        </div>
-      </section>
-
-      {/* Empty State if no materials */}
-      {isEmpty && (
-        <EmptyState
-          icon="✧"
-          title="No materials prepared yet"
-          description="Upload your first syllabus, lecture document, or textbook chapter to generate quizzes, flashcards, short notes, diagrams, or animations."
-          actionLabel="Prepare your first material"
-          actionHref="/teacher/prepare"
-        />
-      )}
-
-      {/* Recent Resources & Content */}
-      {!isEmpty && (
-        <div className="dashboard-columns-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", marginTop: "32px" }}>
-          {/* Recent Resources */}
-          <section className="dashboard-card" style={{ padding: "24px", border: "1px solid #e5ebe2", borderRadius: "12px", background: "#fffefa" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-              <h3 style={{ margin: 0, fontFamily: "var(--serif)", fontSize: "19px", fontWeight: 400 }}>Recent Resources</h3>
-              <Link href="/teacher/prepare" style={{ fontSize: "11px", color: "#32735f", fontWeight: 600 }}>＋ Upload</Link>
+          {/* ANIMATION */}
+          <div
+            className="flex flex-col rounded-[15px] border p-6 transition-transform hover:-translate-y-0.5"
+            style={{
+              backgroundColor: "rgba(188,255,173,0.35)",
+              borderColor: "rgba(126,218,132,0.45)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="#374151" strokeWidth="1.6">
+                <circle cx="16" cy="16" r="13" />
+                <polygon points="13 11 22 16 13 21 13 11" fill="none" />
+              </svg>
+              <span className="text-[12.5px] font-semibold uppercase tracking-[0.06em] text-[#374151]">
+                ANIMATION
+              </span>
             </div>
-            {recentResources.length === 0 ? (
-              <p style={{ fontSize: "12px", color: "#8a948d" }}>No resources uploaded yet.</p>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {recentResources.map((res) => (
-                  <div key={res.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", borderRadius: "8px", background: "#fbfbf8", border: "1px solid #edf1eb" }}>
-                    <div>
-                      <strong style={{ display: "block", fontSize: "12px", color: "#28332d" }}>{res.title}</strong>
-                      <span style={{ fontSize: "10px", color: "#86928a" }}>
-                        {res.resource_type.toUpperCase()} {res.page_count ? `· ${res.page_count} pages` : ""}
-                      </span>
-                    </div>
-                    <span style={{ fontSize: "10px", padding: "3px 8px", borderRadius: "12px", background: res.status === "ready" ? "#eef7ef" : "#fef7e0", color: res.status === "ready" ? "#2d7a46" : "#856404" }}>
-                      {res.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          {/* Recent Generated Content */}
-          <section className="dashboard-card" style={{ padding: "24px", border: "1px solid #e5ebe2", borderRadius: "12px", background: "#fffefa" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-              <h3 style={{ margin: 0, fontFamily: "var(--serif)", fontSize: "19px", fontWeight: 400 }}>Recent Generated Content</h3>
-              <Link href="/teacher/history" style={{ fontSize: "11px", color: "#32735f", fontWeight: 600 }}>View All ↗</Link>
+            <div
+              className="my-3 leading-none text-[#000000]"
+              style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "56px", fontWeight: 400 }}
+            >
+              {animationsCount}
             </div>
-            {recentPreparations.length === 0 ? (
-              <p style={{ fontSize: "12px", color: "#8a948d" }}>No preparations created yet.</p>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {recentPreparations.map((prep) => {
-                  const typePath = {
-                    short_note: "notes",
-                    quiz: "quizzes",
-                    flashcard: "flashcards",
-                    image: "images",
-                    animation: "animations",
-                    other: "history",
-                  }[prep.preparation_type] || "history";
+            <div className="text-[13px] text-[#4B465D]">Generated animations</div>
+          </div>
 
-                  return (
-                    <Link
-                      key={prep.id}
-                      href={`/teacher/${typePath}/${prep.id}`}
-                      style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", borderRadius: "8px", background: "#fbfbf8", border: "1px solid #edf1eb", textDecoration: "none" }}
-                    >
-                      <div>
-                        <strong style={{ display: "block", fontSize: "12px", color: "#28332d" }}>
-                          {prep.result?.title ? String(prep.result.title) : prep.resource?.title || "Prepared Material"}
-                        </strong>
-                        <span style={{ fontSize: "10px", color: "#86928a" }}>
-                          {prep.preparation_type.replace("_", " ").toUpperCase()}
-                        </span>
-                      </div>
-                      <StatusBadge status={prep.status} />
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </section>
+          {/* QUIZZES */}
+          <div
+            className="flex flex-col rounded-[15px] border p-6 transition-transform hover:-translate-y-0.5"
+            style={{
+              backgroundColor: "rgba(255,164,226,0.29)",
+              borderColor: "rgba(244,95,197,0.35)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="#374151" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="7" y="5" width="18" height="22" rx="3" />
+                <path d="M11 11h2" /><path d="M15 11h6" />
+                <path d="M11 16h2" /><path d="M15 16h6" />
+                <path d="M11 21h2" /><path d="M15 21h6" />
+              </svg>
+              <span className="text-[12.5px] font-semibold uppercase tracking-[0.06em] text-[#374151]">
+                QUIZZES
+              </span>
+            </div>
+            <div
+              className="my-3 leading-none text-[#000000]"
+              style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "56px", fontWeight: 400 }}
+            >
+              {quizzesCount}
+            </div>
+            <div className="text-[13px] text-[#4B465D]">Ready-to-publish quizzes</div>
+          </div>
+
+          {/* RESOURCES */}
+          <div
+            className="flex flex-col rounded-[15px] border p-6 transition-transform hover:-translate-y-0.5"
+            style={{
+              backgroundColor: "rgba(255,190,161,0.35)",
+              borderColor: "rgba(230,130,80,0.30)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="#374151" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 5h8l6 6v16a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" />
+                <polyline points="17 5 17 11 23 11" />
+              </svg>
+              <span className="text-[12.5px] font-semibold uppercase tracking-[0.06em] text-[#374151]">
+                RESOURCES
+              </span>
+            </div>
+            <div
+              className="my-3 leading-none text-[#000000]"
+              style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "56px", fontWeight: 400 }}
+            >
+              {resourcesCount}
+            </div>
+            <div className="text-[13px] text-[#4B465D]">Uploaded teaching materials</div>
+          </div>
+
+          {/* FLASHCARDS */}
+          <div
+            className="flex flex-col rounded-[15px] border p-6 transition-transform hover:-translate-y-0.5"
+            style={{
+              backgroundColor: "rgba(208,237,250,0.48)",
+              borderColor: "rgba(61,83,208,0.25)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="#374151" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7 24L12 8h13l-5 16H7z" />
+              </svg>
+              <span className="text-[12.5px] font-semibold uppercase tracking-[0.06em] text-[#374151]">
+                FLASHCARDS
+              </span>
+            </div>
+            <div
+              className="my-3 leading-none text-[#000000]"
+              style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "56px", fontWeight: 400 }}
+            >
+              {flashcardsCount}
+            </div>
+            <div className="text-[13px] text-[#4B465D]">Active recall sets</div>
+          </div>
         </div>
-      )}
+      </section>
+
+      {/* ── Active Classroom Groups ────────────────────────────────────── */}
+      <section className="flex flex-col gap-4" aria-label="Active classroom groups">
+        {/* Section heading */}
+        <div>
+          <span className="block text-[13px] font-semibold uppercase tracking-[0.08em] text-[#756A6A]">
+            MANAGEMENT
+          </span>
+          <h2
+            className="mt-0.5 leading-tight text-[#000000]"
+            style={{
+              fontFamily: "'Ramaraja', serif",
+              fontSize: "64px",
+              fontWeight: 400,
+              lineHeight: 1,
+            }}
+          >
+            Active Classroom Groups
+          </h2>
+        </div>
+
+        {/* Purple-themed empty state — mirrors student "Resume Studying" placeholder */}
+        <div
+          className="flex min-h-[200px] flex-col items-center justify-center gap-5 rounded-[15px] border border-dashed p-8 text-center"
+          style={{
+            borderColor: "#C4B5FD",
+            backgroundColor: "rgba(219,211,251,0.18)",
+          }}
+          role="status"
+        >
+          {/* Icon circle */}
+          <div
+            className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full"
+            style={{ backgroundColor: "#EDE9FE" }}
+          >
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#7665F5"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="2" y="4" width="20" height="13" rx="2" />
+              <path d="M8 21h8" />
+              <path d="M12 17v4" />
+              <path d="M7 9h3" />
+              <path d="M14 9h3" />
+            </svg>
+          </div>
+
+          {/* Copy */}
+          <div className="flex flex-col gap-2">
+            <h3
+              className="text-[22px] font-semibold"
+              style={{ fontFamily: "'Baskervville', Georgia, serif", color: "#30285B" }}
+            >
+              No classroom groups yet
+            </h3>
+            <p className="mx-auto max-w-md text-[14px] leading-relaxed text-[#756A6A]">
+              Create your first classroom to organise students, share quizzes and track their progress in one place.
+            </p>
+          </div>
+
+          {/* Purple CTA button */}
+          <Link
+            href="/teacher/classes"
+            className="inline-flex items-center gap-2 rounded-[10px] px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+            style={{
+              background: "linear-gradient(90deg, #806CF4 0%, #9E8FFA 55%, #B8A8F8 100%)",
+            }}
+          >
+            + Create a Classroom
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
