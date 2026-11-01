@@ -80,16 +80,16 @@ export function AnimationListPage({ role }: AnimationListPageProps) {
   }, [animations, searchQuery]);
 
   return (
-    <div className={`animation-list-page${role === "student" ? " animation-list-page--student" : ""}`}>
+    <div className="animation-list-page animation-list-page--visual">
       <PageHeader
         eyebrow="ANIMATED VISUAL EXPLANATIONS"
         title={role === "teacher" ? "Teaching Animations" : "Educational Animations"}
         description="Step-by-step animated storyboard lessons and visual process explanations."
-        actionHref={role === "teacher" ? `/${role}/prepare?type=animation` : undefined}
-        actionLabel={role === "teacher" ? "＋ Create Animation" : undefined}
+        actionHref={role === "teacher" && animations.length > 0 ? `/${role}/prepare?type=animation` : undefined}
+        actionLabel={role === "teacher" && animations.length > 0 ? "＋ Create Animation" : undefined}
       />
 
-      {(role === "teacher" || animations.length > 0) && (
+      {animations.length > 0 && (
         <div className="animation-filter-toolbar">
           <input
             type="search"
@@ -115,13 +115,11 @@ export function AnimationListPage({ role }: AnimationListPageProps) {
 
       {!loading && !error && filteredAnimations.length === 0 && (
         <EmptyState
-          className={role === "student" ? "animation-empty-state" : undefined}
+          className="animation-empty-state"
           icon={
-            role === "student" ? (
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                <path d="M11 7.5c0-1.54 1.67-2.5 3-1.73l13 7.5a2 2 0 0 1 0 3.46l-13 7.5c-1.33.77-3-.19-3-1.73v-15Z" fill="currentColor" />
-              </svg>
-            ) : "▷"
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M12 8.5c0-1.55 1.68-2.52 3.02-1.75l12.96 7.5a2 2 0 0 1 0 3.46l-12.96 7.5C13.68 25.98 12 25.01 12 23.46V8.5Z" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" />
+            </svg>
           }
           title={
             searchQuery

@@ -71,6 +71,25 @@ describe("AnimationListPage", () => {
     render(<AnimationListPage role="teacher" />);
 
     expect(await screen.findByText("No animations generated yet")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Teaching Animations" })).toBeInTheDocument();
+    expect(screen.queryByRole("searchbox", { name: "Search animations" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Create Animation/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Prepare your first animation/ })).toHaveAttribute(
+      "href",
+      "/teacher/prepare?type=animation",
+    );
+    expect(screen.getByRole("status").querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("keeps teacher search and create controls when animations exist", async () => {
+    render(<AnimationListPage role="teacher" />);
+
+    expect(await screen.findByText("Cardiovascular System — Storyboard")).toBeInTheDocument();
+    expect(screen.getByRole("searchbox", { name: "Search animations" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Create Animation/ })).toHaveAttribute(
+      "href",
+      "/teacher/prepare?type=animation",
+    );
   });
 
   it("renders the designed student empty state without unused controls", async () => {
