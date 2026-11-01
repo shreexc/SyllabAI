@@ -15,9 +15,9 @@ import type { PreparationRequest, PreparationStatus, PreparationType, UserRole }
 const teacherTypeFilters = [
   { label: "All materials", value: "all"       },
   { label: "Quizzes",       value: "quiz"      },
+  { label: "Chat",          value: "chat"      },
   { label: "Flashcards",    value: "flashcard" },
   { label: "Animation",     value: "animation" },
-  { label: "Resources",     value: "resource"  },
 ] as const;
 
 const studentTypeFilters = [
@@ -57,10 +57,6 @@ function relativeDate(date: string): string {
   if (elapsedDays === 1) return "Yesterday";
   if (elapsedDays < 7) return `${elapsedDays} days ago`;
   return new Date(date).toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
-
-function typeIcon(type: PreparationType): string {
-  return { quiz: "?", short_note: "≡", flashcard: "▱", image: "▧", animation: "▷", other: "＋" }[type];
 }
 
 function dateGroupLabel(date: string): string {
@@ -188,7 +184,7 @@ function SharedHistoryView({
   return (
     <main className={pageClass}>
       {/* ── Page heading ── */}
-      <section className="history-heading history-heading--student">
+      <section className="history-heading history-heading--archive">
         <div>
           <span className="eyebrow">{eyebrow}</span>
           <h1>{heading}</h1>
@@ -196,7 +192,7 @@ function SharedHistoryView({
       </section>
 
       {/* ── Type filter pills ── */}
-      <section className="history-toolbar history-toolbar--student" aria-label="Filter by material type">
+      <section className="history-toolbar history-toolbar--archive" aria-label="Filter by material type">
         <div className="history-type-filters" role="group" aria-label="Filter by material type">
           {filters.map((filter) => {
             const isActive = typeFilter === filter.value;
@@ -207,10 +203,9 @@ function SharedHistoryView({
                 <span>{filter.label}</span>
               </>
             );
-            // "chat" in student mode → link to chat page
             if (filter.value === "chat") {
               return (
-                <Link key={filter.value} href="/student/chat" className={cls}>
+                <Link key={filter.value} href={`/${role}/chat`} className={cls}>
                   {content}
                 </Link>
               );
@@ -231,7 +226,7 @@ function SharedHistoryView({
       </section>
 
       {/* ── Date filter bar ── */}
-      <section className="history-date-toolbar" aria-label="Filter by date">
+      <section className="history-date-toolbar history-date-toolbar--archive" aria-label="Filter by date">
         <div className="history-date-presets" role="group" aria-label="Date range">
           <button
             type="button"
@@ -256,14 +251,14 @@ function SharedHistoryView({
           </button>
         </div>
         <label className="history-month-select">
-          <span>Select Month:</span>
+          <span>Select Date:</span>
           <span className="history-month-select-control">
             <select
               aria-label="Select month and year"
               value={monthFilter}
               onChange={(e) => { setMonthFilter(e.target.value); setDateFilter("all"); }}
             >
-              <option value="all">All Months and Years</option>
+              <option value="all">All Months Available</option>
               {availableMonths.map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
@@ -285,7 +280,7 @@ function SharedHistoryView({
 
       {/* ── Content area ── */}
       <section
-        className={`history-student-content${!loading && !error && items.length === 0 ? " history-layout--empty" : ""}`}
+        className={`history-student-content history-archive-content${!loading && !error && items.length === 0 ? " history-layout--empty" : ""}`}
       >
         {loading ? (
           <div className="history-skeleton" aria-label="Loading preparation history">
@@ -314,11 +309,17 @@ function SharedHistoryView({
                     <details key={item.id} className="history-student-item">
                       <summary>
                         <span className={`history-student-item-icon history-student-item-icon--${item.preparation_type}`}>
-                          {typeIcon(item.preparation_type)}
+                          <HistoryTypeIcon type={item.preparation_type} />
                         </span>
                         <span className="history-student-item-title">{item.resource.title}</span>
                         <span className="history-student-item-meta">
-                          {item.status === "completed" ? relativeDate(item.created_at) : statusNames[item.status]}
+                          {item.status === "completed"
+                            ? new Date(item.created_at).toLocaleDateString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : statusNames[item.status]}
                         </span>
                       </summary>
                       <div className="history-student-item-details">
@@ -365,7 +366,6 @@ function SharedHistoryView({
 
 export function PreparationHistoryPage({ role }: { role: UserRole }) {
   const [typeFilter, setTypeFilter]   = useState<PreparationType | "all">("all");
-  const [statusFilter, setStatusFilter] = useState<PreparationStatus | "all">("all");
   const [items, setItems]             = useState<PreparationRequest[]>([]);
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState<string | null>(null);
@@ -378,7 +378,6 @@ export function PreparationHistoryPage({ role }: { role: UserRole }) {
     try {
       const result = await listPreparations(role, {
         ...(typeFilter !== "all"   ? { type:   typeFilter   } : {}),
-        ...(statusFilter !== "all" ? { status: statusFilter } : {}),
       });
       setItems(result);
     } catch (caught) {
@@ -387,7 +386,7 @@ export function PreparationHistoryPage({ role }: { role: UserRole }) {
     } finally {
       setLoading(false);
     }
-  }, [role, statusFilter, typeFilter]);
+  }, [role, typeFilter]);
 
   useEffect(() => {
     const t = setTimeout(() => void load(), 0);

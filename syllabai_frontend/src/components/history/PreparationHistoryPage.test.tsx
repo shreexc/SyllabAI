@@ -65,14 +65,22 @@ describe("preparation history", () => {
     expect(within(screen.getByRole("alert")).getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 
-  it("passes material and status filters to the history API", async () => {
+  it("renders teacher archive controls and filters materials", async () => {
     render(<PreparationHistoryPage role="teacher" />);
-    await screen.findByRole("button", { name: /Cell biology/ });
+    await screen.findByText("Cell biology");
+
+    expect(screen.getByRole("heading", { name: "Teaching History & Archives" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Chat/ })).toHaveAttribute("href", "/teacher/chat");
+    expect(screen.queryByRole("button", { name: /Resources/ })).not.toBeInTheDocument();
+    expect(screen.getByText("Select Date:")).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "All Months Available" })).toBeInTheDocument();
+    expect(screen.getByText(new Date(preparation.created_at).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }))).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Flashcards" }));
     await waitFor(() => expect(listPreparations).toHaveBeenLastCalledWith("teacher", { type: "flashcard" }));
-
-    fireEvent.change(screen.getByLabelText("Status"), { target: { value: "failed" } });
-    await waitFor(() => expect(listPreparations).toHaveBeenLastCalledWith("teacher", { type: "flashcard", status: "failed" }));
   });
 });

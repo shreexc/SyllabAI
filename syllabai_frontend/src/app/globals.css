@@ -4078,3 +4078,346 @@ em { color: #4c806b; font-family: var(--serif); font-weight: 400; }
   .account-progress-card { min-height: 120px; }
   .account-security-card { padding: 20px 18px; }
 }
+
+/* Teaching and learning history archive layout */
+.history-heading--archive {
+  align-items: flex-start;
+  margin: 20px 0 64px;
+}
+
+.history-heading--archive .eyebrow {
+  color: #806cf4;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.history-heading--archive h1 {
+  margin: 18px 0 0;
+  color: #000;
+  font-family: var(--font-editorial);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+.history-toolbar--archive {
+  min-height: 50px;
+  margin-bottom: 8px;
+  padding: 5px;
+  border-color: #e5e0f5;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: 0 2px 4px #30285b26;
+}
+
+.history-toolbar--archive .history-type-filters {
+  justify-content: space-between;
+  gap: 8px;
+  overflow: visible;
+}
+
+.history-toolbar--archive .history-filter {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #756a6a;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.history-toolbar--archive .history-filter svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.history-toolbar--archive .history-filter:hover {
+  color: #6555c1;
+  background: #f8f6ff;
+}
+
+.history-toolbar--archive .history-filter--active {
+  border-color: transparent;
+  color: #fff;
+  background: linear-gradient(110deg, #806cf4 0%, #a693f8 100%);
+  font-weight: 600;
+}
+
+.history-date-toolbar--archive {
+  min-height: 48px;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding: 6px 10px;
+  border-color: #dedede;
+  border-radius: 0;
+  box-shadow: 0 2px 4px #30285b26;
+}
+
+.history-date-toolbar--archive .history-date-presets {
+  flex: 1.15;
+  gap: 12px;
+}
+
+.history-date-toolbar--archive .history-date-filter {
+  min-height: 32px;
+  padding: 0 13px;
+  border-color: #b3b3b3;
+  color: #756a6a;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.history-date-toolbar--archive .history-date-filter:hover,
+.history-date-toolbar--archive .history-date-filter--active {
+  border-color: #806cf4;
+  color: #6555c1;
+  background: #f8f6ff;
+}
+
+.history-date-toolbar--archive .history-month-select {
+  flex: 1;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.history-date-toolbar--archive .history-month-select-control {
+  min-width: 0;
+  width: min(100%, 190px);
+  max-width: 190px;
+}
+
+.history-date-toolbar--archive .history-month-select-control select {
+  padding: 6px 30px 6px 12px;
+  border-color: #b3b3b3;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.history-date-toolbar--archive .history-month-select-control svg {
+  width: 16px;
+  height: 16px;
+}
+
+.history-archive-content {
+  min-height: 220px;
+}
+
+.history-archive-content .history-skeleton {
+  gap: 18px;
+}
+
+.history-archive-content .history-skeleton span {
+  height: 57px;
+  border: 1px solid #e5e0f5;
+  border-radius: 11px;
+  background: linear-gradient(90deg, #fff 20%, #f3f1fa 45%, #fff 70%);
+}
+
+.history-archive-content .history-student-feed {
+  gap: 14px;
+}
+
+.history-archive-content .history-date-divider {
+  margin: 10px 0 7px;
+  font-family: var(--font-editorial);
+  font-size: 13px;
+}
+
+.history-archive-content .history-student-list {
+  gap: 18px;
+}
+
+.history-archive-content .history-student-item {
+  border-color: #e5e0f5;
+  border-radius: 11px;
+  box-shadow: 0 2px 4px #30285b26;
+}
+
+.history-archive-content .history-student-item summary {
+  min-height: 55px;
+  gap: 30px;
+  padding: 8px 22px;
+}
+
+.history-archive-content .history-student-item-icon {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d5d0e7;
+  border-radius: 10px;
+}
+
+.history-archive-content .history-student-item-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.history-archive-content .history-student-item-icon--quiz {
+  color: #936184;
+  background: #f8e6f2;
+}
+
+.history-archive-content .history-student-item-icon--flashcard {
+  color: #61798b;
+  background: #e5f1f5;
+}
+
+.history-archive-content .history-student-item-icon--animation {
+  color: #4c806b;
+  background: #e5f3e7;
+}
+
+.history-archive-content .history-student-item-title {
+  font-size: 14px;
+}
+
+.history-archive-content .history-student-item-meta {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .history-heading--archive {
+    margin: 8px 0 64px;
+  }
+
+  .history-heading--archive .eyebrow {
+    font-size: 12px;
+  }
+
+  .history-heading--archive h1 {
+    margin-top: 18px;
+    font-size: 36px;
+  }
+
+  .history-toolbar--archive {
+    min-height: 50px;
+    margin-bottom: 8px;
+    padding: 5px;
+  }
+
+  .history-toolbar--archive .history-type-filters {
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  .history-toolbar--archive .history-filter {
+    flex: 1 1 0;
+    gap: 6px;
+    padding: 8px 5px;
+    font-size: 12px;
+  }
+
+  .history-toolbar--archive .history-filter svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .history-date-toolbar--archive {
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+    margin-bottom: 22px;
+    padding: 6px 8px;
+  }
+
+  .history-date-toolbar--archive .history-date-presets {
+    width: auto;
+    flex: 1.2;
+    gap: 6px;
+  }
+
+  .history-date-toolbar--archive .history-date-filter {
+    min-height: 31px;
+    flex: 1 1 auto;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .history-date-toolbar--archive .history-month-select {
+    width: auto;
+    flex: 1;
+    justify-content: flex-end;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .history-date-toolbar--archive .history-month-select-control {
+    width: min(100%, 175px);
+    min-width: 0;
+    max-width: 175px;
+  }
+
+  .history-date-toolbar--archive .history-month-select-control select {
+    padding: 6px 24px 6px 9px;
+    font-size: 12px;
+  }
+
+  .history-date-toolbar--archive .history-month-select-control svg {
+    right: 7px;
+    width: 14px;
+    height: 14px;
+  }
+
+  .history-archive-content .history-student-item summary {
+    gap: 14px;
+    padding: 8px 12px;
+  }
+
+  .history-archive-content .history-student-item-title {
+    font-size: 13px;
+  }
+
+  .history-archive-content .history-student-item-meta {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  .history-heading--archive {
+    margin-bottom: 32px;
+  }
+
+  .history-heading--archive h1 {
+    font-size: 30px;
+  }
+
+  .history-toolbar--archive .history-filter {
+    flex-direction: column;
+    gap: 3px;
+    font-size: 10px;
+  }
+
+  .history-toolbar--archive .history-filter svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .history-date-toolbar--archive {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .history-date-toolbar--archive .history-month-select {
+    justify-content: space-between;
+  }
+
+  .history-date-toolbar--archive .history-month-select-control {
+    width: 62%;
+    max-width: none;
+  }
+}
