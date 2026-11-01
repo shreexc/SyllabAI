@@ -77,7 +77,7 @@ export function TeacherDashboard() {
           <Image
             src="/images/study-banner-art-user.png"
             alt="Teaching workspace illustration"
-            width={210}
+            width={220}
             height={155}
             priority
             className="object-contain"
@@ -92,28 +92,19 @@ export function TeacherDashboard() {
           <span className="block text-[13px] font-semibold uppercase tracking-[0.08em] text-[#756A6A]">
             WORKSPACE SUMMARY
           </span>
-          <h2
-            className="mt-0.5 leading-tight text-[#000000]"
-            style={{
-              fontFamily: "'Ramaraja', serif",
-              fontSize: "64px",
-              fontWeight: 400,
-              lineHeight: 1,
-            }}
-          >
+          <h2 className="mt-0.5 font-baskervville text-[38px] font-bold leading-tight text-[#000000]">
             Teaching Overview
           </h2>
         </div>
 
-        {/* 2×2 Stat card grid — same card anatomy as StudentDashboard */}
-        <div className="grid grid-cols-2 gap-5">
+        {/* Teacher metrics use the same stat-card scale and palette as the student dashboard. */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
           {/* ANIMATION */}
           <div
-            className="flex flex-col rounded-[15px] border p-6 transition-transform hover:-translate-y-0.5"
+            className="flex flex-col rounded-[15px] border border-[#D7D2DF] p-6 transition-transform hover:-translate-y-0.5"
             style={{
               backgroundColor: "rgba(188,255,173,0.35)",
-              borderColor: "rgba(126,218,132,0.45)",
             }}
           >
             <div className="flex items-center gap-3">
@@ -125,10 +116,7 @@ export function TeacherDashboard() {
                 ANIMATION
               </span>
             </div>
-            <div
-              className="my-3 leading-none text-[#000000]"
-              style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "56px", fontWeight: 400 }}
-            >
+            <div className="my-3 font-dm-serif text-[56px] font-normal leading-none text-[#000000]">
               {animationsCount}
             </div>
             <div className="text-[13px] text-[#4B465D]">Generated animations</div>
@@ -136,10 +124,9 @@ export function TeacherDashboard() {
 
           {/* QUIZZES */}
           <div
-            className="flex flex-col rounded-[15px] border p-6 transition-transform hover:-translate-y-0.5"
+            className="flex flex-col rounded-[15px] border border-[#D7D2DF] p-6 transition-transform hover:-translate-y-0.5"
             style={{
               backgroundColor: "rgba(255,164,226,0.29)",
-              borderColor: "rgba(244,95,197,0.35)",
             }}
           >
             <div className="flex items-center gap-3">
@@ -153,10 +140,7 @@ export function TeacherDashboard() {
                 QUIZZES
               </span>
             </div>
-            <div
-              className="my-3 leading-none text-[#000000]"
-              style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "56px", fontWeight: 400 }}
-            >
+            <div className="my-3 font-dm-serif text-[56px] font-normal leading-none text-[#000000]">
               {quizzesCount}
             </div>
             <div className="text-[13px] text-[#4B465D]">Ready-to-publish quizzes</div>
@@ -164,10 +148,9 @@ export function TeacherDashboard() {
 
           {/* RESOURCES */}
           <div
-            className="flex flex-col rounded-[15px] border p-6 transition-transform hover:-translate-y-0.5"
+            className="flex flex-col rounded-[15px] border border-[#D7D2DF] p-6 transition-transform hover:-translate-y-0.5"
             style={{
-              backgroundColor: "rgba(255,190,161,0.35)",
-              borderColor: "rgba(230,130,80,0.30)",
+              backgroundColor: "rgba(255,190,161,0.48)",
             }}
           >
             <div className="flex items-center gap-3">
@@ -179,10 +162,7 @@ export function TeacherDashboard() {
                 RESOURCES
               </span>
             </div>
-            <div
-              className="my-3 leading-none text-[#000000]"
-              style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "56px", fontWeight: 400 }}
-            >
+            <div className="my-3 font-dm-serif text-[56px] font-normal leading-none text-[#000000]">
               {resourcesCount}
             </div>
             <div className="text-[13px] text-[#4B465D]">Uploaded teaching materials</div>
@@ -190,10 +170,9 @@ export function TeacherDashboard() {
 
           {/* FLASHCARDS */}
           <div
-            className="flex flex-col rounded-[15px] border p-6 transition-transform hover:-translate-y-0.5"
+            className="flex flex-col rounded-[15px] border border-[#D7D2DF] p-6 transition-transform hover:-translate-y-0.5"
             style={{
               backgroundColor: "rgba(208,237,250,0.48)",
-              borderColor: "rgba(61,83,208,0.25)",
             }}
           >
             <div className="flex items-center gap-3">
@@ -204,10 +183,7 @@ export function TeacherDashboard() {
                 FLASHCARDS
               </span>
             </div>
-            <div
-              className="my-3 leading-none text-[#000000]"
-              style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "56px", fontWeight: 400 }}
-            >
+            <div className="my-3 font-dm-serif text-[56px] font-normal leading-none text-[#000000]">
               {flashcardsCount}
             </div>
             <div className="text-[13px] text-[#4B465D]">Active recall sets</div>
@@ -222,26 +198,14 @@ export function TeacherDashboard() {
           <span className="block text-[13px] font-semibold uppercase tracking-[0.08em] text-[#756A6A]">
             MANAGEMENT
           </span>
-          <h2
-            className="mt-0.5 leading-tight text-[#000000]"
-            style={{
-              fontFamily: "'Ramaraja', serif",
-              fontSize: "64px",
-              fontWeight: 400,
-              lineHeight: 1,
-            }}
-          >
+          <h2 className="mt-0.5 font-baskervville text-[38px] font-bold leading-tight text-[#000000]">
             Active Classroom Groups
           </h2>
         </div>
 
         {/* Purple-themed empty state — mirrors student "Resume Studying" placeholder */}
         <div
-          className="flex min-h-[200px] flex-col items-center justify-center gap-5 rounded-[15px] border border-dashed p-8 text-center"
-          style={{
-            borderColor: "#C4B5FD",
-            backgroundColor: "rgba(219,211,251,0.18)",
-          }}
+          className="flex min-h-[180px] flex-col items-center justify-center gap-5 rounded-[15px] border border-dashed border-[#B3B3B3] bg-white p-8 text-center"
           role="status"
         >
           {/* Icon circle */}
